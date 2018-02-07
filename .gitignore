@@ -1,52 +1,20 @@
-# Prerequisites
-*.d
+# Ignore everything by default
+*
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+# Don't ignore subdirectories
+!*/
 
-# Linker output
-*.ilk
-*.map
-*.exp
+# Don't ignore git settings
+!*.gitignore
+!*.gitattributes
 
-# Precompiled Headers
-*.gch
-*.pch
+# Don't ignore special files
+!Makefile
+!*.md
+!*.rst
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+# Don't ignore python
+!*.py
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# Don't ignore scripts
+!*.sh
