@@ -10,6 +10,7 @@
 
 # Don't ignore special files
 !Makefile
+*.spec
 !*.md
 !*.rst
 
