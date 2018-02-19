@@ -17,5 +17,12 @@
 # Don't ignore python
 !*.py
 
+# Don't ignore VHDL and Verilog files
+!*.vhd
+!*.v
+
+#Don't ignore vivado IP
+!*.xcix
+
 # Don't ignore scripts
 !*.sh
