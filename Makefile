@@ -2,7 +2,6 @@ SUBPACKAGES := \
         python
 
 SUBPACKAGES.DEBUG    := $(patsubst %,%.debug,    ${SUBPACKAGES})
-SUBPACKAGES.INSTALL  := $(patsubst %,%.install,  ${SUBPACKAGES})
 SUBPACKAGES.RPM      := $(patsubst %,%.rpm,      ${SUBPACKAGES})
 SUBPACKAGES.CLEANRPM := $(patsubst %,%.cleanrpm, ${SUBPACKAGES})
 SUBPACKAGES.CLEAN    := $(patsubst %,%.clean,    ${SUBPACKAGES})
