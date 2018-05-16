@@ -44,8 +44,8 @@ _rpmprep: preprpm
 preprpm: default
 	@echo "Running preprpm target"
 	$(MakeDir) $(ScriptDir)
-	@cp -rf reg_interface.py $(ScriptDir)
-	@cp -rf rw_reg.py        $(PackageDir)
+	@cp -rf scripts/*  $(ScriptDir)
+	@cp -rf arm common $(PackageDir)
 	-cp -rf README.md LICENSE CHANGELOG.md MANIFEST.in requirements.txt $(PackageDir)
 	-cp -rf README.md LICENSE CHANGELOG.md MANIFEST.in requirements.txt pkg
 
