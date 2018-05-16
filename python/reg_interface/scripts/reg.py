@@ -7,7 +7,7 @@ if __name__ == '__main__':
     parser.add_option("-e", "--execute", type="str", dest="exe",
                       help="Function to execute once", metavar="exe", default=None)
     parser.add_option("-n", "--hostname", type="string", dest="hostname",
-                      help="CTP7 hostname, default is the one used at p5", default="amc-s2e01-23-03")
+                      help="CTP7 hostname, default is the one used at p5", default="")
 
     (options, args) = parser.parse_args()
 
@@ -21,9 +21,10 @@ if __name__ == '__main__':
 
     if options.exe:
         parseXML()
-        if (rpc_connect(options.hostname)):
-          print '[Connection error] RPC connection failed'
-          exit
+        if (options.hostname):
+            if (rpc_connect(options.hostname)):
+                print '[Connection error] RPC connection failed'
+                exit
         prompt=Prompt()
         prompt.execute(options.exe,args)
         sys.exit()
