@@ -11,14 +11,13 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
 
-    for path in sys.path:
-        print path
-    try:
-       from gem_reg_interface_extras.ri_prompt_extended import *
-       print "Extended prompt module found"
-    except ImportError:
-       from reg_interface.common.ri_prompt import *
-       print "Extended prompt module not found, importing basic one"
+    # A possible way of adding user extension module:
+    #try:
+    #   from gem_reg_interface_extras.ri_prompt_extended import *
+    #   print "Extended prompt module found"
+    #except ImportError:
+    #   print "Extended prompt module not found, importing basic one"
+    from reg_interface.common.ri_prompt import *
 
     if options.exe:
         parseXML()
