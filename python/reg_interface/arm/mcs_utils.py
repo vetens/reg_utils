@@ -1,19 +1,6 @@
 import sys
 from time import *
-
-def main():
-
-    filename = ""
-    if len(sys.argv) < 2:
-        print('Usage: mcs.py <mcs_filename>')
-        return
-    else:
-        filename = sys.argv[1]
-
-    timeStart = clock()
-    readMcs(filename, 5464972)
-    totalTime = clock() - timeStart
-    print('time took = ' + str(totalTime))
+from ..common.bit_utils import hex
 
 def readMcs(filename):
     f = open(filename, 'r')
@@ -66,12 +53,3 @@ def readMcs(filename):
 
     f.close()
     return bytes
-
-def hex(number):
-    if number is None:
-        return 'None'
-    else:
-        return "{0:#0x}".format(number)
-
-if __name__ == '__main__':
-    main()

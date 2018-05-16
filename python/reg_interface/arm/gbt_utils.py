@@ -1,22 +1,10 @@
-#!/usr/bin/env python
-
-from reg_interface.common.reg_xml_parser import parseXML, getNode, parseInt
-from reg_interface.common.reg_base_ops import *
+from ..common.reg_xml_parser import parseXML, getNode, parseInt
+from ..common.reg_base_ops import *
+from ..common.print_utils import *
+from ..common.bit_utils import *
 from time import *
 import array
 import struct
-
-DEBUG=False
-
-class Colors:            
-    WHITE   = '\033[97m' 
-    CYAN    = '\033[96m' 
-    MAGENTA = '\033[95m' 
-    BLUE    = '\033[94m' 
-    YELLOW  = '\033[93m' 
-    GREEN   = '\033[92m' 
-    RED     = '\033[91m' 
-    ENDC    = '\033[0m'  
 
 ADDR_IC_ADDR = None
 ADDR_IC_WRITE_DATA = None
@@ -24,8 +12,6 @@ ADDR_IC_EXEC_WRITE = None
 ADDR_IC_EXEC_READ = None
 
 ADDR_LINK_RESET = None
-
-ADDRESS_TABLE_SLOW_CTRL_ONLY = '/mnt/persistent/texas/gem_amc_top_SLOW_CTRL_ONLY.xml'
 
 V3B_GBT0_ELINK_TO_VFAT = {0: 15, 1: 14, 2: 13, 3: 12, 6: 7, 8: 23}
 V3B_GBT1_ELINK_TO_VFAT = {1: 4, 2: 2, 3: 3, 4: 8, 5: 0, 6: 6, 7: 16, 8: 5, 9: 1}
@@ -161,72 +147,3 @@ def selectGbt(ohIdx, gbtIdx):
 
 def checkGbtReady(ohIdx, gbtIdx):
     return parseInt(readReg(getNode('GEM_AMC.OH_LINKS.OH%d.GBT%d_READY' % (ohIdx, gbtIdx))))
-
-def check_bit(byteval,idx):
-    return ((byteval&(1<<idx))!=0);
-
-def debug(string):
-    if DEBUG:
-        print('DEBUG: ' + string)
-
-def debugCyan(string):
-    if DEBUG:
-        printCyan('DEBUG: ' + string)
-
-def heading(string):                                                                    
-    print Colors.BLUE                                                             
-    print '\n>>>>>>> '+str(string).upper()+' <<<<<<<'
-    print Colors.ENDC                   
-                                                      
-def subheading(string):                         
-    print Colors.YELLOW                                        
-    print '---- '+str(string)+' ----',Colors.ENDC                    
-                                                                     
-def printCyan(string):                                                
-    print Colors.CYAN                                    
-    print string, Colors.ENDC                                                                     
-                                                                      
-def printRed(string):                                                                                                                       
-    print Colors.RED                                                                                                                                                            
-    print string, Colors.ENDC                                           
-
-def hex(number):
-    if number is None:
-        return 'None'
-    else:
-        return "{0:#0x}".format(number)
-
-def binary(number, length):
-    if number is None:
-        return 'None'
-    else:
-        return "{0:#0{1}b}".format(number, length + 2)
-
-if __name__ == '__main__':
-    import os
-    if len(sys.argv) < 4:
-        print('Usage: gbt.py <oh_num> <gbt_num> <command>')
-        print('available commands:')
-        print('  config <config_filename_txt>:   Configures the GBT with the given config file (must use the txt version of the config file, can be generated with the GBT programmer software)')
-        print('  v3b-phase-scan <base_config_filename_txt>:   Configures the GBT with the given config file, and performs an elink phase scan while checking the VFAT communication for each phase')
-        exit(os.EX_USAGE)
-    else:
-        ohSelect = int(sys.argv[1])
-        gbtSelect = int(sys.argv[2])
-        command = sys.argv[3]
-    
-    if ohSelect > 11:
-        printRed("The given OH index (%d) is out of range (must be 0-11)" % ohSelect)
-        exit(os.EX_USAGE)
-    if gbtSelect > 2:
-        printRed("The given GBT index (%d) is out of range (must be 0-2)" % gbtSelect)
-        exit(os.EX_USAGE)
-
-    if ohSelect > 11:
-        printRed("The given OH index (%d) is out of range (must be 0-11)" % ohSelect)
-        exit(os.EX_USAGE)
-    if gbtSelect > 2:
-        printRed("The given GBT index (%d) is out of range (must be 0-2)" % gbtSelect)
-        exit(os.EX_USAGE)
-
-    programGBT(ohSelect, gbtSelect, command)

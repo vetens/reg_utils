@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
-from reg_xml_parser import getNode, parseInt
-from reg_base_ops import *
-from print_utils import *
-from jtag import *
-from virtex6 import *
-from sca_utils import *
-import gpio 
-from ..arm.program_fpga import *
-from mcs import *
+from reg_interface.common.reg_xml_parser import getNode, parseInt
+from reg_interface.common.reg_base_ops import *
+from reg_interface.common.print_utils import *
+from reg_interface.common.jtag import *
+from reg_interface.common.virtex6 import *
+from reg_interface.common.sca_utils import *
+import reg_interface.common.gpio as gpio
 from time import *
 import array
 import struct

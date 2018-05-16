@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from reg_interface.common.jtag import *
-from reg_interface.common.virtex6 import *
-from reg_interface.common.print_utils import *
-from reg_interface.common.bit_utils import *
-from mcs import *
+from ..common.jtag import *
+from ..common.virtex6 import *
+from ..common.print_utils import *
+from ..common.bit_utils import *
+from mcs_utils import readMcs
 from time import *
 import array
 import struct
