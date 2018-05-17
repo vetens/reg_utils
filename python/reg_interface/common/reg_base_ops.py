@@ -1,6 +1,7 @@
 import sys, os, subprocess, socket
 from time import sleep
 from ctypes import *
+from reg_xml_parser import parseInt
 
 hostname = socket.gethostname()
 if 'eagle' in hostname:
@@ -132,25 +133,6 @@ def parseError(e):
         return "My Bus error"
     else:
         return "Unknown error: "+str(e)
-
-def parseInt(s):
-    if s is None:
-        return None
-    string = str(s)
-    if string.startswith('0x'):
-        return int(string, 16)
-    elif string.startswith('0b'):
-        return int(string, 2)
-    else:
-        return int(string)
-
-def substituteVars(string, vars):
-    if string is None:
-        return string
-    ret = string
-    for varKey in vars.keys():
-        ret = ret.replace('${' + varKey + '}', str(vars[varKey]))
-    return ret
 
 def tabPad(s,maxlen):
     return s+"\t"*((8*maxlen-len(s)-1)/8+1) 
