@@ -17,7 +17,7 @@ if __name__ == '__main__':
     #   print "Extended prompt module found"
     #except ImportError:
     #   print "Extended prompt module not found, importing basic one"
-    from reg_interface.common.ri_prompt import *
+    from reg_utils.reg_interface.common.ri_prompt import *
 
     if options.exe:
         parseXML()

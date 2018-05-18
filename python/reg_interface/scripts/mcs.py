@@ -1,6 +1,6 @@
 import sys
 from time import *
-from reg_interface.arm.mcs_utils import readMcs
+from reg_utils.reg_interface.arm.mcs_utils import readMcs
 
 def main():
 

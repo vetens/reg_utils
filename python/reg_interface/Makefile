@@ -1,5 +1,5 @@
 #
-# Makefile for vfatqc package
+# Makefile for reg_interface package
 #
 
 BUILD_HOME := $(shell dirname `cd ../../; pwd`)
