@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from reg_interface.arm.gbt_extras import programGBT
+from reg_utils.reg_interface.arm.gbt_extras import programGBT
 from time import *
 import array
 import struct

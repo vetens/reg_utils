@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-from reg_interface.common.reg_xml_parser import getNode, parseInt, parseXML
-from reg_interface.common.reg_base_ops import *
-from reg_interface.common.print_utils import *
-from reg_interface.common.bit_utils import *
-from reg_interface.common.jtag import initJtagRegAddrs
-from reg_interface.common.sca_utils import *
-from reg_interface.common.sca_common_utils import *
+from reg_utils.reg_interface.common.reg_xml_parser import getNode, parseInt, parseXML
+from reg_utils.reg_interface.common.reg_base_ops import *
+from reg_utils.reg_interface.common.print_utils import *
+from reg_utils.reg_interface.common.bit_utils import *
+from reg_utils.reg_interface.common.jtag import initJtagRegAddrs
+from reg_utils.reg_interface.common.sca_utils import *
+from reg_utils.reg_interface.common.sca_common_utils import *
 from time import *
 import array
 import struct
