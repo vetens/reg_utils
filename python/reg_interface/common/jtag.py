@@ -4,7 +4,7 @@ from reg_xml_parser import getNode, parseInt
 from reg_base_ops import *
 from print_utils import *
 from bit_utils import *
-from sca_utils import getOHlist, sendScaCommand
+from sca_common_utils import getOHlist, sendScaCommand
 from time import *
 import array
 import struct
