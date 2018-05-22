@@ -4,7 +4,7 @@
 
 BUILD_HOME := $(shell dirname `cd ../../; pwd`)
 
-Project      := reg-utils
+Project      := reg_utils
 ShortProject := reg_utils
 Namespace    := reg_utils
 Package      := reg_interface
