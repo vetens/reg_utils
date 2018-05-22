@@ -46,6 +46,9 @@ class Prompt(Cmd):
         except TypeError:
             print 'Could not recognize command. See usage in tool.'
 
+    def do_startup_test(self, args):
+        print "Startup test passed"
+
     def complete_read(self, text, line, begidx, endidx):
         return completeReg(text)
 

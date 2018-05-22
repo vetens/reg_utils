@@ -1,4 +1,4 @@
-# reg-utils
+# reg_utils
 GENERAL DESCRIPTION NEEDED
 
 The fw_modules directory includes the modules necessary for the generator to work correctly, as well as some handy utilities (optional).

@@ -9,7 +9,7 @@ ROOT_VER=$3
 
 echo OS_VERSION $OS_VERSION
 echo PY_VER $PY_VER
-echo ROOT_VER $ROOT_VER
+#echo ROOT_VER $ROOT_VER
 
 sudo yum -y install man
 
@@ -20,13 +20,8 @@ export BUILD_HOME=/home/daqbuild
 export DATA_PATH=/data
 
 # set up ROOT
-len=${#ROOT_VER}
-gccver=${ROOT_VER:$((${len}-3)):3}
-rootver=${ROOT_VER:0:$((${len}-7))}
-
-cd /opt/root/${rootver}-gcc${gccver}/root
-ls -lZ
-. ./bin/thisroot.sh
+#len=${#ROOT_VER}
+#gccver=${ROOT_VER:$((${len}-3)):3}
 
 cd ${BUILD_HOME}/reg_utils
 
@@ -41,10 +36,12 @@ then
     pip install -U "pip<10" importlib
     pip install -U setuptools
     pip install -U codecov
-    pip install -U -r requirements.txt
-    pip install -U root_numpy
+    #pip install -U -r requirements.txt
+    #pip install -U root_numpy
 
     # set up and run tests and coverage
+
+    #python reg.py -e startup_test
 
     # leave virtualenv
     deactivate
