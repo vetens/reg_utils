@@ -41,6 +41,8 @@ then
 
     # set up and run tests and coverage
 
+    python ./reg_interface/scripts/reg.py -e startup_test
+
     # leave virtualenv
     deactivate
 fi
