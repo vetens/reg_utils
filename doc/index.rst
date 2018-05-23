@@ -11,6 +11,13 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   usage/installation
+   usage/quickstart
+
+.. automodule:: reg_interface.common.ri_prompt
+.. autoclass:: Prompt
+   :members:
+
 
 
 Indices and tables

@@ -15,6 +15,7 @@ histfile = os.path.expanduser('~/.reg_interface_history')
 histfile_size = 1000
 
 class Prompt(Cmd):
+    """Class defining command line interface prompt"""
 
     def preloop(self):
         if readline and os.path.exists(histfile):
