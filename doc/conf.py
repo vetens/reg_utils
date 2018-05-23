@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'reg_utils'
-copyright = u'2018, Mykhailo Dalchenko, Evaldas Juska, Andrew Peck, Jared Sturdy'
+copyright = u'2018, Mykhailo Dalchenko, Evaldas Juska, Robert King, Andrew Peck, Jared Sturdy'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -184,7 +184,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'reg_utils.tex', u'reg\\_utils Documentation',
-   u'Mykhailo Dalchenko, Evaldas Juska, Andrew Peck, Jared Sturdy', 'manual'),
+   u'Mykhailo Dalchenko, Evaldas Juska, Robert King, Andrew Peck, Jared Sturdy', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -214,7 +214,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'reg_utils', u'reg_utils Documentation',
-     [u'Mykhailo Dalchenko, Evaldas Juska, Andrew Peck, Jared Sturdy'], 1)
+     [u'Mykhailo Dalchenko, Evaldas Juska, Robert King, Andrew Peck, Jared Sturdy'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -228,7 +228,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'reg_utils', u'reg_utils Documentation',
-   u'Mykhailo Dalchenko, Evaldas Juska, Andrew Peck, Jared Sturdy', 'reg_utils', 'One line description of project.',
+   u'Mykhailo Dalchenko, Evaldas Juska, RobertKing, Andrew Peck, Jared Sturdy', 'reg_utils', 'One line description of project.',
    'Miscellaneous'),
 ]
 

@@ -3,21 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to reg_utils's documentation!
+reg_util package documenation
 =====================================
 
-Contents:
+Table of contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    usage/installation
    usage/quickstart
-
-.. automodule:: reg_interface.common.ri_prompt
-.. autoclass:: Prompt
-   :members:
-
+   reg_interface/reg_interface
+   reg_generator/reg_generator
 
 
 Indices and tables
