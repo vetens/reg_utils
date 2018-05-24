@@ -3,25 +3,41 @@ import cPickle as pickle
 import gc
 from collections import OrderedDict
 
+"""``reg_xml_parser`` module defines XML address table parser"""
+
 ADDRESS_TABLE_TOP = os.getenv("REG_XML_PATH")+'/amc_address_table_top.xml'
+"""Address table location is defined through `$REG_XML_PATH`. The file name should be `amc_address_table_top.xml`"""
 hostname = socket.gethostname()
 
 DEBUG = True
 nodes = OrderedDict()
 
 class Node:
+    """Class defining XML node 
+    """
     name = ''
+    """Node full name"""
     description = ''
+    """Node description"""
     vhdlname = ''
+    """Node VHDL name"""
     address = 0x0
+    """Register address in relative address space"""
     real_address = 0x0
+    """Register real address"""
     permission = ''  
+    """Register permission. Possible values: 'r','w','rw' or None"""
     mask = 0x0
+    """Register mask"""
     isModule = False
+    """Flag indicating if a given node is a register or a module"""
     parent = None
+    """Parent node"""
     level = 0
     warn_min_value = None
+    """Min value warning threshold for monitoring"""
     error_min_value = None
+    """Min value error threshold for monitoring"""
 
     def __init__(self):
         self.children = []
