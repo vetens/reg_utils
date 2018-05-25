@@ -21,8 +21,6 @@ XML parser
 ----------
 .. automodule:: reg_utils.reg_interface.common.reg_xml_parser
    :members:
-
-.. autoclass:: Node
-   :members:
+   :exclude-members: ADDRESS_TABLE_TOP
 
 
