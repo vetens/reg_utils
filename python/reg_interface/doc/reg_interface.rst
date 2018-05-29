@@ -1,5 +1,5 @@
-reg_interface
-*************
+Detailed documentation
+**********************
 Executable scripts
 ==================
 

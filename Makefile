@@ -1,8 +1,9 @@
 SUBPACKAGES := \
         python
 
-DOC := \
-	doc
+DOCS := \
+	python/reg_interface/doc \
+	python/reg_generator/doc
 
 SUBPACKAGES.DEBUG    := $(patsubst %,%.debug,    ${SUBPACKAGES})
 SUBPACKAGES.RPM      := $(patsubst %,%.rpm,      ${SUBPACKAGES})
@@ -11,9 +12,9 @@ SUBPACKAGES.CLEAN    := $(patsubst %,%.clean,    ${SUBPACKAGES})
 
 DOC.CLEAN := $(patsubst %,%.clean, ${DOC})
 
-.PHONY: doc
+.PHONY: $(DOCS)
 
-all: $(SUBPACKAGES) $(SUBPACKAGES.RPM) $(DOC)
+all: $(SUBPACKAGES) $(SUBPACKAGES.RPM) $(DOCS)
 
 rpm: $(SUBPACKAGES) $(SUBPACKAGES.RPM)
 
@@ -21,7 +22,9 @@ cleanrpm: $(SUBPACKAGES.CLEANRPM)
 
 clean: $(SUBPACKAGES.CLEAN) $(DOC.CLEAN)
 
-$(DOC):
+doc: $(DOCS)
+
+$(DOCS):
 	$(MAKE) -C $@ html
 
 $(SUBPACKAGES):

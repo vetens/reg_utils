@@ -1,7 +1,5 @@
 Quickstart guide
 ================
-Reg_interface
--------------
 This guide describes in short how to run the reg_interface tool on the host PC. 
 
 After the installation the executable scripts has to be added to the system $PATH variable. Following this one can start the Command Line Interface by simply running
@@ -53,8 +51,3 @@ expected output should look like this (in this system only link 0 has OH connect
      >>> 0x650b0000 r    GEM_AMC.OH.OH2.STATUS.FW.DATE                           Bus Error
      >>> 0x650f0000 r    GEM_AMC.OH.OH3.STATUS.FW.DATE                           Bus Error
      >>> 0x65170000 r    GEM_AMC.OH.OH5.STATUS.FW.DATE                           Bus Error
-
-Reg_generator
--------------
-
-TO BE COMPLETED
