@@ -112,8 +112,6 @@ after_script: skip
     - . building/bin/activate
     - pip install python/reg_interface/rpm/*.tar.gz
     - echo "Generate documentation"
-    - echo "Install sphinx in local venv"
-    - pip install sphinx
     - make doc
     - echo "Install the dependencies"
     - echo "Run the predefined test"
