@@ -3,36 +3,76 @@ import cPickle as pickle
 import gc
 from collections import OrderedDict
 
+"""``reg_xml_parser`` module defines XML address table parser"""
+
 ADDRESS_TABLE_TOP = os.getenv("REG_XML_PATH")+'/amc_address_table_top.xml'
+"""Address table location is defined through `$REG_XML_PATH`. The file name should be `amc_address_table_top.xml`"""
 hostname = socket.gethostname()
 
 DEBUG = True
 nodes = OrderedDict()
 
 class Node:
+    """Class defining XML node 
+    """
     name = ''
+    """Node full name"""
     description = ''
+    """Node description"""
     vhdlname = ''
+    """Node VHDL name"""
     address = 0x0
+    """Register address in relative address space"""
     real_address = 0x0
+    """Register real address"""
     permission = ''  
+    """Register permission. Possible values: 'r','w','rw' or None"""
     mask = 0x0
+    """Register mask"""
     isModule = False
+    """Flag indicating if a given node is a register or a module"""
     parent = None
+    """Parent node"""
     level = 0
     warn_min_value = None
+    """Min value warning threshold for monitoring"""
     error_min_value = None
+    """Min value error threshold for monitoring"""
 
     def __init__(self):
         self.children = []
 
     def addChild(self, child):
+        """Add child node
+
+        :param Node child: A child node
+
+        """
         self.children.append(child)
 
     def getVhdlName(self):
+        """Convert XML node name to VHDL node name
+
+        :return: VHDL node name
+
+        """
         return self.name.replace(TOP_NODE_NAME + '.', '').replace('.', '_')
 
     def output(self):
+        """Print node's content
+
+        Ouput example:
+
+        >>> Name: GEM_AMC.GEM_SYSTEM.BOARD_ID
+        >>> Description: Board ID that gets embedded in the AMC13 header
+        >>> Address: 0x00900002
+        >>> Permission: rw
+        >>> Mask: 0x0000ffff
+        >>> Module: False
+        >>> Parent: GEM_AMC.GEM_SYSTEM
+        >>> None        
+
+        """
         print 'Name:',self.name
         print 'Description:',self.description
         print 'Address:','{0:#010x}'.format(self.address)
@@ -55,6 +95,12 @@ def main():
     print len(kids), kids[0].name
 
 def parseXML():
+    """Parses XML file. A ``cPickle`` module is used to produce a ``*.pickle`` file to speed up the process. 
+       
+       In case ``*.pickle`` file exists it will be loaded, otherwise an ``xml`` file will be parsed and a new ``pickle`` file created for future operations
+
+    :return: OrederedDict nodes
+    """
     print 'Open pickled address table if available ',ADDRESS_TABLE_TOP[:-3]+'pickle...'
 
     fname =  ADDRESS_TABLE_TOP[:-3] + "pickle"
@@ -87,6 +133,17 @@ def parseXML():
     return nodes
 
 def makeTree(node,baseName,baseAddress,nodes,parentNode,vars,isGenerated):
+    """Build the nodes tree recursively
+    
+    :param Node node: Current node
+    :param str basname: Current node name without parent nodes
+    :param uint_32 baseAddress: Relative address
+    :param OrderedDict nodes: Already built node tree
+    :param Node parentNode: Parent node
+    :param list vars: Dictionary of index shift for generated nodes
+    :param bool isGenerated: Flag showing whether the node should be generated (make a number of copies of the same node changing an index parameter) from the address table
+
+    """
     
     if (isGenerated == None or isGenerated == False) and node.get('generate') is not None and node.get('generate') == 'true':
         generateSize = parseInt(node.get('generate_size'))
@@ -126,6 +183,12 @@ def makeTree(node,baseName,baseAddress,nodes,parentNode,vars,isGenerated):
         makeTree(child,name,address,nodes,newNode,vars,False)
 
 def getAllChildren(node,kids=[]):
+    """Fills children information
+
+    :param Node node: Current node
+    :param OrderedDict kids: Children of a given node
+
+    """
     if node.children==[]:
         kids.append(node)
         return kids
@@ -134,6 +197,12 @@ def getAllChildren(node,kids=[]):
             getAllChildren(child,kids)
 
 def getNode(nodeName):
+    """
+
+    :param str nodeName: Node name
+    :return: If found returns Node, otherwise returns None
+
+    """
     try: 
         return nodes[nodeName]
     except KeyError:
@@ -141,9 +210,21 @@ def getNode(nodeName):
         return None
 
 def getNodeFromAddress(nodeAddress):
+    """
+    
+    :param uint_32 nodeAddress: Node address
+    :return: A node having the nodeAddress
+
+    """
     return next((node for node in nodes.values() if node.real_address == nodeAddress),None)
 
 def getNodesContaining(nodeString):
+    """
+ 
+    :param str nodeString: Substring of node(s) name
+    :return: List of nodes containing provided substring in their names
+
+    """
     nodelist = [nodes[key] for key in nodes if nodeString in key]
     if len(nodelist): 
         return nodelist
@@ -151,12 +232,24 @@ def getNodesContaining(nodeString):
 
 #returns *readable* registers
 def getRegsContaining(nodeString):
+    """
+ 
+    :param str nodeString: Substring of register(s) name
+    :return: List of readable registers containing provided substring in their names
+
+    """
     nodelist = [nodes[key] for key in nodes if nodeString in key and nodes[key].permission is not None]
     if len(nodelist):
         return nodelist
     else: return None
 
 def completeReg(string):
+    """
+
+    :param str string: Starting substring of node name
+    :return: A list of nodes with names starting with input string
+
+    """
     possibleNodes = [] 
     completions = []
     currentLevel = len([c for c in string if c=='.'])
@@ -172,6 +265,12 @@ def completeReg(string):
     return completions
 
 def parseInt(s):
+    """
+
+    :param str s: An integer number in dec, hex or binary format
+    :return: Converted integer
+
+    """
     if s is None:
         return None
     string = str(s)
@@ -184,6 +283,13 @@ def parseInt(s):
 
 
 def substituteVars(string, vars):
+    """
+    
+    :param str string: Initial string
+    :param dict vars: A dictionary with substition pairs
+    :return: Initial string with substitions key to value from vars dictionary
+
+    """
     if string is None:
         return string
     ret = string
