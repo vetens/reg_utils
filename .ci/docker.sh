@@ -34,14 +34,12 @@ then
     sudo chown :daqbuild -R .
 elif [ "${COMMAND}" = "start" ]
 then
-    DOCKER_CONTAINER_ID=$(docker ps | grep ${DOCKER_IMAGE} | awk '{print $1}')
     if [[ "${DOCKER_IMAGE}" =~ slc6$ ]]
     then
         echo "Starting SLC6 GEM DAQ custom docker image"
         docker run --user daqbuild --privileged=true -d -ti -e "container=docker" \
                -v `pwd`:/home/daqbuild/${REPO_NAME}:rw,z \
                ${DOCKER_IMAGE} /bin/bash
-        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.slc6.x86_64.rpm -O wiscrpc.rpm'
     elif [[ "${DOCKER_IMAGE}" =~ cc7$ ]]
     then
         echo "Starting CC7 GEM DAQ custom docker image"
@@ -49,7 +47,6 @@ then
                -v /sys/fs/cgroup:/sys/fs/cgroup \
                -v `pwd`:/home/daqbuild/${REPO_NAME}:rw,z \
                ${DOCKER_IMAGE} /usr/sbin/init
-        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm'
     elif [[ "${DOCKER_IMAGE}" =~ cc8$ ]]
     then
         echo "Starting CC8 GEM DAQ custom docker image"
@@ -58,9 +55,17 @@ then
         exit 1
     fi
 
+    DOCKER_CONTAINER_ID=$(docker ps | grep ${DOCKER_IMAGE} | awk '{print $1}')
     echo DOCKER_CONTAINER_ID=${DOCKER_CONTAINER_ID}
     if [ ! -z ${DOCKER_CONTAINER_ID+x} ];
     then
+        if [[ "${DOCKER_IMAGE}" =~ slc6$ ]]
+            docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.slc6.x86_64.rpm -O wiscrpc.rpm'
+        elif [[ "${DOCKER_IMAGE}" =~ cc7$ ]]
+            docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm'
+        else
+            docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm'#need to compile cc8 for the future
+        fi
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'echo Testing build on docker for `cat /etc/system-release`'
         docker logs $DOCKER_CONTAINER_ID
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'pip install -I --user "pip" "importlib" "codecov" "setuptools<38.2"'
