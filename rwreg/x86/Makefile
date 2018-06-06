@@ -19,7 +19,6 @@ include $(BUILD_HOME)/$(Project)/config/mfRPMRules.mk
 
 CC=g++
 CCFLAGS=-O0 -g3 -fno-inline -Wall -fPIC -pthread -m64
-ADDFLAGS=-std=gnu++14
 
 LDFLAGS=-shared
 
@@ -47,10 +46,10 @@ rpc:${RPC_SA_LIB}
 
 $(RPC_SA_LIB): $(OBJS_RPC_SA)
 	@mkdir -p ${BUILD_HOME}/${Project}/${Package}/${Arch}/lib/
-	$(CC) $(CCFLAGS) $(ADDFLAGS) $(LDFLAGS) $(INC) $(LIB) -o $@ $^
+	$(CC) $(CCFLAGS) $(LDFLAGS) $(INC) $(LIB) -o $@ $^
 
 $(OBJS_RPC_SA):$(SRCS_RPC_SA)
-	$(CC) $(CCFLAGS) $(ADDFLAGS) $(INC) -c -o $@ $<
+	$(CC) $(CCFLAGS) $(INC) -c -o $@ $<
 
 
 clean: cleanrpm
