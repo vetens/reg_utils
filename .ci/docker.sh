@@ -74,7 +74,7 @@ then
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''importlib'\''))"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''pip'\''))"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''setuptools'\''))"'
-        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'sudo yum -y install protobuf-devel'
+        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'sudo yum -y install protobuf-lite-devel'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'sudo rpm -ivh wiscrpc.rpm'
     fi
 else
