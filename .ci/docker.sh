@@ -60,8 +60,10 @@ then
     if [ ! -z ${DOCKER_CONTAINER_ID+x} ];
     then
         if [[ "${DOCKER_IMAGE}" =~ slc6$ ]]
+        then
             docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.slc6.x86_64.rpm -O wiscrpc.rpm'
         elif [[ "${DOCKER_IMAGE}" =~ cc7$ ]]
+        then
             docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm'
         else
             docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm'#need to compile cc8 for the future
