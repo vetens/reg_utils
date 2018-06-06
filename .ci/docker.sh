@@ -40,6 +40,7 @@ then
         docker run --user daqbuild --privileged=true -d -ti -e "container=docker" \
                -v `pwd`:/home/daqbuild/${REPO_NAME}:rw,z \
                ${DOCKER_IMAGE} /bin/bash
+        wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.slc6.x86_64.rpm -O wiscrpc.rpm
     elif [[ "${DOCKER_IMAGE}" =~ cc7$ ]]
     then
         echo "Starting CC7 GEM DAQ custom docker image"
@@ -47,6 +48,7 @@ then
                -v /sys/fs/cgroup:/sys/fs/cgroup \
                -v `pwd`:/home/daqbuild/${REPO_NAME}:rw,z \
                ${DOCKER_IMAGE} /usr/sbin/init
+        wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm
     elif [[ "${DOCKER_IMAGE}" =~ cc8$ ]]
     then
         echo "Starting CC8 GEM DAQ custom docker image"
@@ -65,6 +67,8 @@ then
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''importlib'\''))"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''pip'\''))"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''setuptools'\''))"'
+        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'sudo yum install protobuf-devel'
+        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'sudo rpm -ivh wiscrpc.rpm'
     fi
 else
     DOCKER_CONTAINER_ID=$(docker ps | grep ${DOCKER_IMAGE} | awk '{print $1}')
