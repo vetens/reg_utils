@@ -113,7 +113,6 @@ after_script: skip
     - pip install python/reg_interface/rpm/*.tar.gz
     - echo "Generate documentation"
     - export REG_XML_PATH=$PWD
-    - export XHAL_ROOT=$PWD
     - make doc
     - echo "Install the dependencies"
     - echo "Run the predefined test"

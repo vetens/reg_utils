@@ -12,7 +12,7 @@ if 'eagle' in hostname:
   wReg = lib.putReg
   wReg.argtypes=[c_uint,c_uint]
 else:
-  lib = CDLL(os.getenv("XHAL_ROOT")+"/lib/x86_64/librpcman.so")
+  lib = CDLL(os.path.abspath("librwreg.so"))
   rReg = lib.getReg
   rReg.restype = c_uint
   rReg.argtypes=[c_uint]
