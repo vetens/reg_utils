@@ -34,6 +34,7 @@ then
     sudo chown :daqbuild -R .
 elif [ "${COMMAND}" = "start" ]
 then
+    DOCKER_CONTAINER_ID=$(docker ps | grep ${DOCKER_IMAGE} | awk '{print $1}')
     if [[ "${DOCKER_IMAGE}" =~ slc6$ ]]
     then
         echo "Starting SLC6 GEM DAQ custom docker image"
@@ -57,7 +58,6 @@ then
         exit 1
     fi
 
-    DOCKER_CONTAINER_ID=$(docker ps | grep ${DOCKER_IMAGE} | awk '{print $1}')
     echo DOCKER_CONTAINER_ID=${DOCKER_CONTAINER_ID}
     if [ ! -z ${DOCKER_CONTAINER_ID+x} ];
     then
