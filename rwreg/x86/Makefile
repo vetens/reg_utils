@@ -55,3 +55,6 @@ $(OBJS_RPC_SA):$(SRCS_RPC_SA)
 
 clean: cleanrpm
 	-${RM} ${RPC_SA_LIB} ${OBJS_RPC_SA} 
+
+cleandoc: 
+	@echo "TO DO"
