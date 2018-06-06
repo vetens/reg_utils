@@ -108,6 +108,9 @@ after_script: skip
     #- find ./rpm -iname '*.rpm' -o -iname '*.tar.gz' -o -iname '*.tbz2'
   after_success:
     - echo "Testing the installation of the package"
+    - echo "First install rwreg"
+    - sudo rpm -ivh rwreg/x86/rpm/*.rpm
+    - echo "Now install reg_interface"
     - virtualenv building -p python --system-site-packages
     - . building/bin/activate
     - pip install python/reg_interface/rpm/*.tar.gz
