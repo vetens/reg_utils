@@ -8,13 +8,14 @@ PackageName  := $(ShortPackage)
 PackagePath  := $(shell pwd)
 PackageDir   := pkg/$(ShortPackage)
 Arch         := x86
+Packager     := Mykhailo Dalchenko
 
 RWREG_VER_MAJOR=1
 RWREG_VER_MINOR=0
 RWREG_VER_PATCH=0
 
-#include $(BUILD_HOME)/$(Project)/config/mfCommonDefs.mk
-#include $(BUILD_HOME)/$(Project)/config/mfDefsGEM.mk
+include $(BUILD_HOME)/$(Project)/config/mfCommonDefs.mk
+include $(BUILD_HOME)/$(Project)/config/mfRPMRules.mk
 
 CC=g++
 CCFLAGS=-O0 -g3 -fno-inline -Wall -fPIC -pthread -m64
@@ -36,9 +37,11 @@ OBJS_RPC_SA = $(SRCS_RPC_SA:.cc=.o)
 
 RPC_SA_LIB=${BUILD_HOME}/${Project}/${Package}/${Arch}/lib/librwreg.so
 
-.PHONY: clean
+.PHONY: clean rpc
 
-all:${RPC_SA_LIB} 
+build: rpc
+
+_all:${RPC_SA_LIB} 
 
 rpc:${RPC_SA_LIB}
 
@@ -50,5 +53,5 @@ $(OBJS_RPC_SA):$(SRCS_RPC_SA)
 	$(CC) $(CCFLAGS) $(ADDFLAGS) $(INC) -c -o $@ $<
 
 
-clean:
-	-${RM} ${RPC_SA_LIB} ${OBJS_RPC_SA}
+clean: cleanrpm
+	-${RM} ${RPC_SA_LIB} ${OBJS_RPC_SA} 
