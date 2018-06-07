@@ -109,14 +109,13 @@ after_script: skip
   after_success:
     - echo "Testing the installation of the package"
     - echo "First install rwreg"
-    - sudo rpm -ivh rwreg/x86/rpm/*.rpm
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild/${REPO_NAME}; sudo rpm -ivh rwreg/x86/rpm/*.rpm"
     - echo "Now install reg_interface"
-    - virtualenv building -p python --system-site-packages
-    - . building/bin/activate
-    - pip install python/reg_interface/rpm/*.tar.gz
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild; virtualenv building -p python --system-site-packages"
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild; . building/bin/activate"
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild/${REPO_NAME}; pip install python/reg_interface/rpm/*.tar.gz"
     - echo "Generate documentation"
-    - export REG_XML_PATH=$PWD
-    - make doc
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild/${REPO_NAME}; export REG_XML_PATH=$PWD; make doc"
     - echo "Install the dependencies"
     - echo "Run the predefined test"
     - ./.ci/docker.sh stop ${DOCKER_IMAGE}
