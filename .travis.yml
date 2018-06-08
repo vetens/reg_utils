@@ -111,7 +111,7 @@ after_script: skip
     - echo "First install rwreg"
     - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild/${REPO_NAME}; sudo rpm -ivh rwreg/x86/rpm/*.rpm"
     - echo "Now install reg_interface and generate documentation"
-    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild; virtualenv building -p python2.7 --no-site-packages; . building/bin/activate; cd ${REPO_NAME}; pip install pip==9.0.3; pip install sphinx; pip install python/reg_interface/rpm/*.tar.gz; export REG_XML_PATH=$PWD; make doc"
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild; virtualenv building -p python --system-site-packages; . building/bin/activate; cd ${REPO_NAME}; pip install pip==9.0.3; pip install sphinx; pip install python/reg_interface/rpm/*.tar.gz; export REG_XML_PATH=$PWD; make doc"
     - echo "Install the dependencies"
     - echo "Run the predefined test"
     - ./.ci/docker.sh stop ${DOCKER_IMAGE}
