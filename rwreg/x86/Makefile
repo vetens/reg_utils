@@ -36,7 +36,17 @@ OBJS_RPC_SA = $(SRCS_RPC_SA:.cc=.o)
 
 RPC_SA_LIB=${BUILD_HOME}/${Project}/${Package}/${Arch}/lib/librwreg.so
 
-.PHONY: clean rpc
+.PHONY: clean rpc prerpm
+
+default:
+	@echo "Running default target"
+	$(MakeDir) $(PackageDir)
+
+_rpmprep: preprpm
+	@echo "Running _rpmprep target"
+preprpm: default
+	@echo "Running preprpm target"
+	@cp -rf lib $(PackageDir)
 
 build: rpc
 
@@ -54,6 +64,7 @@ $(OBJS_RPC_SA):$(SRCS_RPC_SA)
 
 clean: cleanrpm
 	-${RM} ${RPC_SA_LIB} ${OBJS_RPC_SA} 
+	-rm -rf $(PackageDir)
 
 cleandoc: 
 	@echo "TO DO"
