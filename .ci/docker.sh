@@ -70,7 +70,7 @@ then
         fi
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'echo Testing build on docker for `cat /etc/system-release`'
         docker logs $DOCKER_CONTAINER_ID
-        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'source /opt/rh/python27/enable'
+        #docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'source /opt/rh/python27/enable'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'pip install -I --user "pip" "importlib" "codecov" "setuptools<38.2"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''importlib'\''))"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''pip'\''))"'
