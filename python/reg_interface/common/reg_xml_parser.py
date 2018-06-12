@@ -5,8 +5,8 @@ from collections import OrderedDict
 
 """``reg_xml_parser`` module defines XML address table parser"""
 
-ADDRESS_TABLE_TOP = os.getenv("REG_XML_PATH")+'/amc_address_table_top.xml'
-"""Address table location is defined through `$REG_XML_PATH`. The file name should be `amc_address_table_top.xml`"""
+ADDRESS_TABLE_TOP = os.getenv("GEM_ADDRESS_TABLE_PATH")+'/amc_address_table_top.xml'
+"""Address table location is defined through `$GEM_ADDRESS_TABLE_PATH`. The file name should be `amc_address_table_top.xml`"""
 hostname = socket.gethostname()
 
 DEBUG = True
