@@ -108,13 +108,10 @@ after_script: skip
     #- find ./rpm -iname '*.rpm' -o -iname '*.tar.gz' -o -iname '*.tbz2'
   after_success:
     - echo "Testing the installation of the package"
-    - virtualenv building -p python --system-site-packages
-    - . building/bin/activate
-    - pip install python/reg_interface/rpm/*.tar.gz
-    - echo "Generate documentation"
-    - export REG_XML_PATH=$PWD
-    - export XHAL_ROOT=$PWD
-    - make doc
+    - echo "First install rwreg"
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild/${REPO_NAME}; sudo rpm -ivh rwreg/x86/rpm/*.rpm"
+    - echo "Now install reg_interface and generate documentation"
+    - docker exec -ti $DOCKER_CONTAINER_ID /bin/bash -ec "cd /home/daqbuild; virtualenv building -p python --no-site-packages; . building/bin/activate; cd ${REPO_NAME}; pip install pip==9.0.3; pip install --upgrade setuptools; pip install sphinx; pip install python/reg_interface/rpm/*.tar.gz; export REG_XML_PATH=$PWD; export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rwreg/lib:/opt/wiscrpcsvc/lib; make doc"
     - echo "Install the dependencies"
     - echo "Run the predefined test"
     - ./.ci/docker.sh stop ${DOCKER_IMAGE}
