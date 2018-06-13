@@ -7,7 +7,7 @@ LongPackage  := rwreg
 PackageName  := $(ShortPackage)
 PackagePath  := $(shell pwd)
 PackageDir   := pkg/$(ShortPackage)
-Arch         := x86
+Arch         := x86_64
 Packager     := Mykhailo Dalchenko
 
 RWREG_VER_MAJOR=1

@@ -1,6 +1,6 @@
 SUBPACKAGES := \
-        x86 \
-        #arm
+        x86_64 \
+        arm
 
 SUBPACKAGES.DEBUG    := $(patsubst %,%.debug,    ${SUBPACKAGES})
 SUBPACKAGES.DOC      := $(patsubst %,%.doc,      ${SUBPACKAGES})
