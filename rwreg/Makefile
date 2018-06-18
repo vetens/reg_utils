@@ -1,15 +1,13 @@
 SUBPACKAGES := \
-        python \
-	rwreg
+        x86_64 \
+        arm
 
 SUBPACKAGES.DEBUG    := $(patsubst %,%.debug,    ${SUBPACKAGES})
-SUBPACKAGES.RPM      := $(patsubst %,%.rpm,      ${SUBPACKAGES})
 SUBPACKAGES.DOC      := $(patsubst %,%.doc,      ${SUBPACKAGES})
+SUBPACKAGES.RPM      := $(patsubst %,%.rpm,      ${SUBPACKAGES})
 SUBPACKAGES.CLEANRPM := $(patsubst %,%.cleanrpm, ${SUBPACKAGES})
 SUBPACKAGES.CLEANDOC := $(patsubst %,%.cleandoc,    ${SUBPACKAGES})
 SUBPACKAGES.CLEAN    := $(patsubst %,%.clean,    ${SUBPACKAGES})
-
-all: $(SUBPACKAGES) $(SUBPACKAGES.RPM) $(SUBPACKAGES.DOC)
 
 rpm: $(SUBPACKAGES) $(SUBPACKAGES.RPM)
 
@@ -17,9 +15,9 @@ doc: $(SUBPACKAGES.DOC)
 
 cleanrpm: $(SUBPACKAGES.CLEANRPM)
 
-cleandoc: $(SUBPACKAGES.CLEANDOC)
+clean: $(SUBPACKAGES.CLEAN)
 
-clean: $(SUBPACKAGES.CLEAN) $(SUBPACKAGES.CLEANDOC)
+cleandoc: $(SUBPACKAGES.CLEANDOC)
 
 $(SUBPACKAGES):
 	$(MAKE) -C $@
@@ -28,7 +26,7 @@ $(SUBPACKAGES.RPM):
 	$(MAKE) -C $(patsubst %.rpm,%, $@) rpm
 
 $(SUBPACKAGES.DOC):
-	$(MAKE) -C $(patsubst %.doc,%, $@) doc
+	$(MAKE) -C $(patsubst %.doc,%, $@) html
 
 $(SUBPACKAGES.CLEANRPM):
 	$(MAKE) -C $(patsubst %.cleanrpm,%, $@) cleanrpm

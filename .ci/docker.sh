@@ -59,12 +59,24 @@ then
     echo DOCKER_CONTAINER_ID=${DOCKER_CONTAINER_ID}
     if [ ! -z ${DOCKER_CONTAINER_ID+x} ];
     then
+        if [[ "${DOCKER_IMAGE}" =~ slc6$ ]]
+        then
+            docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.slc6.x86_64.rpm -O wiscrpc.rpm'
+        elif [[ "${DOCKER_IMAGE}" =~ cc7$ ]]
+        then
+            docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm'
+        else
+            docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'wget https://github.com/mexanick/wiscrpcsvc/releases/download/1.0.0/wiscrpcsvc-1.0.0-1.testing.centos7.x86_64.rpm -O wiscrpc.rpm'#need to compile cc8 for the future
+        fi
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'echo Testing build on docker for `cat /etc/system-release`'
         docker logs $DOCKER_CONTAINER_ID
+        #docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'source /opt/rh/python27/enable'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'pip install -I --user "pip" "importlib" "codecov" "setuptools<38.2"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''importlib'\''))"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''pip'\''))"'
         docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'python -c "import pkg_resources; print(pkg_resources.get_distribution('\''setuptools'\''))"'
+        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'sudo yum -y install protobuf-lite-devel'
+        docker exec -ti ${DOCKER_CONTAINER_ID} /bin/bash -ec 'sudo rpm -ivh wiscrpc.rpm'
     fi
 else
     DOCKER_CONTAINER_ID=$(docker ps | grep ${DOCKER_IMAGE} | awk '{print $1}')
