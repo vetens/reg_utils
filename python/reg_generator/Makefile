@@ -61,6 +61,8 @@ clean:
 	-rm -f  pkg/CHANGELOG.md
 	-rm -f  pkg/requirements.txt
 
+rpm: _rpmall _rpmarm 
+
 print-env:
 	@echo BUILD_HOME     $(BUILD_HOME)
 	@echo PackagePath    $(PackagePath)
