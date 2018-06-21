@@ -3,4 +3,5 @@ include README.md
 include MANIFEST.in
 include LICENSE
 include requirements.txt
+include reg_utils/reg_generator/_version.py
 recursive-include reg_utils/scripts *
