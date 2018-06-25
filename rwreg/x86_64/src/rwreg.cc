@@ -44,10 +44,6 @@ static wisc::RPCMsg req, rsp;
  *  Loaded modules:
  *      * memory
  *      * extras
- *      * utils
- *      * optohybrid
- *      * amc
- *      * calibration_routines
  *
  *  \param hostname CTP7 card hostname
  */

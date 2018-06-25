@@ -1,3 +1,8 @@
+/*! \file rwreg.cc
+ *  \brief This is a collection of basic FPGA register access methods compileable for ARM architeture and mirroring the RPC calls 
+ *  \author Mykhailo Dalchenko <mykhailo.dalchenko@cern.ch>
+ */
+
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <stdlib.h>
