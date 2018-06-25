@@ -68,10 +68,6 @@ DLLEXPORT uint32_t init(char * hostname)
     try {
         ASSERT(rpc.load_module("memory", "memory v1.0.1"));
         ASSERT(rpc.load_module("extras", "extras v1.0.1"));
-        ASSERT(rpc.load_module("utils", "utils v1.0.1"));
-        ASSERT(rpc.load_module("optohybrid", "optohybrid v1.0.1"));
-        ASSERT(rpc.load_module("amc", "amc v1.0.1"));
-        ASSERT(rpc.load_module("calibration_routines", "calibration_routines v1.0.1"));
     }
     STANDARD_CATCH;
 
