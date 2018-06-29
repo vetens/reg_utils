@@ -17,7 +17,6 @@ RWREG_VER_PATCH:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{spli
 include $(BUILD_HOME)/$(Project)/config/mfCommonDefs.mk
 include $(BUILD_HOME)/$(Project)/config/mfRPMRules.mk
 
-CC=g++
 CCFLAGS=-O0 -g3 -fno-inline -Wall -fPIC -pthread -m64
 
 LDFLAGS=-shared
