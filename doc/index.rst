@@ -20,7 +20,7 @@ Table of contents:
 .. toctree::
    :maxdepth: 2
 
-   reg_interface/usage/installation
+   installation
    reg_interface/usage/quickstart
    reg_interface/reg_interface
    rwreg/rwreg_x86.rst
