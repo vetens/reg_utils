@@ -13,7 +13,7 @@ if 'eagle' in hostname:
   wReg.argtypes=[c_uint,c_uint]
 else:
   try:
-    lib = CDLL("librpcmanager.so")
+    lib = CDLL("librpcman.so")
   except OSError:
     lib = CDLL("librwreg.so")
   rReg = lib.getReg
