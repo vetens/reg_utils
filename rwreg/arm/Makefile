@@ -17,9 +17,9 @@ RWREG_VER_MAJOR=1
 RWREG_VER_MINOR=0
 RWREG_VER_PATCH=0
 
-include $(BUILD_HOME)/$(Project)/config/mfZynq.mk
 include $(BUILD_HOME)/$(Project)/config/mfCommonDefs.mk
 include $(BUILD_HOME)/$(Project)/config/mfRPMRules.mk
+include $(BUILD_HOME)/$(Project)/config/mfZynq.mk
 
 IncludeDirs= ${BUILD_HOME}/${Project}/${Package}/${Arch}/include
 INC=$(IncludeDirs:%=-I%)
