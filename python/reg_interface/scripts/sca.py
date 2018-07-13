@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from reg_utils.reg_interface.common.reg_xml_parser import getNode, parseInt, parseXML
+from reg_utils.reg_interface.common.reg_xml_parser import getNode, parseXML
 from reg_utils.reg_interface.common.reg_base_ops import *
 from reg_utils.reg_interface.common.print_utils import *
 from reg_utils.reg_interface.common.bit_utils import *
@@ -8,37 +8,18 @@ from reg_utils.reg_interface.common.jtag import initJtagRegAddrs
 from reg_utils.reg_interface.common.sca_utils import *
 from reg_utils.reg_interface.common.sca_common_utils import *
 from time import *
-import array
-import struct
 import socket
 
-def main():
-
-    instructions = ""
-    ohMask = 0
-    ohList = []
-
-    if len(sys.argv) < 4:
-        print('Usage: sca.py <card_name> <oh_mask> <instructions>. If running on the card, put `local` instead of hostname')
-        print('instructions:')
-        print('  r:        SCA reset will be done')
-        print('  h:        FPGA hard reset will be done')
-        print('  hh:       FPGA hard reset will be asserted and held')
-        print('  fpga-id:  FPGA ID will be read through JTAG')
-        print('  sysmon:   Read FPGA sysmon data repeatedly')
-        print('  program-fpga:   Program OH FPGA with a bitfile or an MCS file. Requires a parameter "bit" or "mcs" and a filename')
-        return
-    else:
-        ohMask = parseInt(sys.argv[2])
-        ohList = getOHlist(ohMask)
-        instructions = sys.argv[3]
+def main(cardName, instructions, ohMask, fwFileBit=None, fwFileMCS=None, gpioValue=None):
+    ohList = getOHlist(ohMask)
 
     parseXML()
     hostname = socket.gethostname()
     if 'eagle' in hostname:
         pass
     else:
-        rpc_connect(sys.argv[1])
+        hostname = cardName
+        rpc_connect(cardName)
     initJtagRegAddrs()
 
     heading("Hola, I'm SCA controller tester :)")
@@ -68,13 +49,18 @@ def main():
         else:
             printRed("This method should only be called from the card!!")
             return
-        if len(sys.argv) < 5:
-            printRed('Usage: sca.py local program-fpga <file-type> <filename>')
-            printRed('file-type can be "mcs" or "bit"')
+
+        if fwFileBit is not None:
+            ftype = "bit"
+            filename = fwFileBit
+        elif fwFileMCS is not None:
+            ftype = "mcs"
+            filename = fwFileMCS
+        else:
+            printRed('Usage: sca.py --cardName="local" --ohMask=<mask> --cmd="program-fpga" --fwFileBit=<filename>')
+            printRed('if your firmware file is a *.msc file use the --fwFileMCS argument')
             return
 
-        ftype = sys.argv[4]
-        filename = sys.argv[5]
         program_fpga(ohMask,ftype,filename)
 
     elif instructions == 'test1':
@@ -84,31 +70,80 @@ def main():
         test2()
 
     elif instructions == 'compare-mcs-bit':
-        if len(sys.argv) < 5:
-            print("Usage: sca.py local compare-mcs-bit <mcs_filename> <bit_filename>")
+        if ((fwFileBit is None) or (fwFileMCS is None)):
+            print("Usage: sca.py --cardName=<cardName> --cmd='compare-mcs-bit' --fwFileMCS=<mcs_filename> --fwFileBit=<bit_filename>")
             return
-        mcsFilename = sys.argv[3]
-        bitFilename = sys.argv[4]
-        compare_mcs_bit(mcsFilename, bitFilename)
+        compare_mcs_bit(fwFileMCS, fwFileBit)
 
     elif instructions == 'gpio-set-direction':
-        if len(sys.argv) < 4:
-            print('Usage: sca.py local gpio-set-direction <direction-mask>')
+        if gpioValue is None:
+            print('Usage: sca.py --cardName=<cardName> --cmd="gpio-set-direction" --gpioValue=<direction-mask>')
             print('direction-mask is a 32 bit number where each bit represents a GPIO channel -- if a given bit is high it means that this GPIO channel will be set to OUTPUT mode, and otherwise it will be set to INPUT mode')
             return
-        directionMask = parseInt(sys.argv[3])
-        gpio.set_direction(ohMask,directionMask)
+        gpio.set_direction(ohMask,gpioValue)
 
     elif instructions == 'gpio-set-output':
-        if len(sys.argv) < 4:
-            print('Usage: sca.py local gpio-set-output <output-data>')
+        if gpioValue is None:
+            print('Usage: sca.py --cardName=<cardName> --cmd="gpio-set-output" --gpioValue=<output-data>')
             print('output-data is a 32 bit number representing the 32 GPIO channels state')
             return
-        outputData = parseInt(sys.argv[3])
-        gpio.set_output(ohMask,outputData)
+        gpio.set_output(ohMask,gpioValue)
 
     elif instructions == 'gpio-read-input':
         gpio.read_input(ohMask)
  
 if __name__ == '__main__':
-    main()
+    supportedCmds = [
+            'compare-mcs-bit',
+            'h',
+            'hh',
+            'fpga-id',
+            'gpio-read-input',
+            'gpio-set-direction',
+            'gpio-set-output'
+            'program-fpga',
+            'r',
+            'sysmon',
+            'test1',
+            'test2',
+
+            ]
+
+    strSupCmds = "[ %s"%supportedCmds[0]
+    for idx in range(1,len(supportedCmds)):
+        strSupCmds = "%s, %s"%(strSupCmds,supportedCmds[idx])
+    strSupCmds = "%s ]"%strSupCmds
+
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("--cardName", type="string", dest="cardName", default=None,
+                      help="hostname of the AMC you are connecting too, e.g. 'eagle64'; if running on an AMC use 'local' instead", metavar="cardName")
+    parser.add_option("--cmd", type="string", dest="cmd", default=None,
+                      help="command to be executed from list: %s"%strSupCmds, metavar="cardName")
+    parser.add_option("--fwFileBit", type="string", dest="fwFileBit", default=None,
+                      help="firmware bit file to be used with either 'program-fpga' or 'compare-mcs-bit' commands (e.g. --cmd='program-fpga')", metavar="fwFileBit")
+    parser.add_option("--fwFileMCS", type="string", dest="fwFileMCS", default=None,
+                      help="firmware mcs file to be used with either 'program-fpga' or 'compare-mcs-bit' commands (e.g. --cmd='program-fpga')", metavar="fwFileBit")
+    parser.add_option("--gpioValue", type="int", dest="gpioValue", default=None,
+                      help="gpio value to write with either 'gpio-set-direction' or 'gpio-set-output' commands (e.g. --cmd='gpio-set-direction')", metavar="gpioValue")
+    parser.add_option("--ohMask", type="int", dest="ohMask", default=0x1,
+                      help="ohMask to apply, a 1 in the n^th bit indicates the n^th OH should be considered", metavar="ohMask")
+    (options, args) = parser.parse_args()
+
+    import os
+    if options.cardName is None:
+        print("you must specify the --cardName argument")
+        exit(os.EX_USAGE)
+    if options.cmd is None:
+        print("you must specify a command; supported commands are from the list:")
+        print(supportedCmds)
+        exit(os.EX_USAGE)
+        
+    main(
+            cardName=options.cardName,
+            instructions=options.cmd,
+            ohMask=options.ohMask,
+            fwFileBit=options.fwFileBit,
+            fwFileMCS=options.fwFileMCS,
+            gpioValue=options.gpioValue
+            )
