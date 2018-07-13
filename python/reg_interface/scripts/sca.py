@@ -45,7 +45,7 @@ def main(cardName, instructions, ohMask, fwFileBit=None, fwFileMCS=None, gpioVal
     elif instructions == 'program-fpga':
         hostname = socket.gethostname()
         if 'eagle' in hostname:
-            from reg_interface.arm.program_fpga import program_fpga
+            from reg_utils.reg_interface.arm.program_fpga import program_fpga
         else:
             printRed("This method should only be called from the card!!")
             return
@@ -63,16 +63,17 @@ def main(cardName, instructions, ohMask, fwFileBit=None, fwFileMCS=None, gpioVal
 
         program_fpga(ohMask,ftype,filename)
 
-    elif instructions == 'test1':
-        test1()
+    #elif instructions == 'test1':
+    #    test1()
         
-    elif instructions == 'test2':
-        test2()
+    #elif instructions == 'test2':
+    #    test2()
 
     elif instructions == 'compare-mcs-bit':
         if ((fwFileBit is None) or (fwFileMCS is None)):
             print("Usage: sca.py --cardName=<cardName> --cmd='compare-mcs-bit' --fwFileMCS=<mcs_filename> --fwFileBit=<bit_filename>")
             return
+        from reg_utils.reg_interface.arm.program_fpga import compare_mcs_bit
         compare_mcs_bit(fwFileMCS, fwFileBit)
 
     elif instructions == 'gpio-set-direction':
@@ -100,13 +101,12 @@ if __name__ == '__main__':
             'fpga-id',
             'gpio-read-input',
             'gpio-set-direction',
-            'gpio-set-output'
+            'gpio-set-output',
             'program-fpga',
             'r',
             'sysmon',
-            'test1',
-            'test2',
-
+            #'test1',
+            #'test2',
             ]
 
     strSupCmds = "[ %s"%supportedCmds[0]
@@ -134,11 +134,17 @@ if __name__ == '__main__':
     if options.cardName is None:
         print("you must specify the --cardName argument")
         exit(os.EX_USAGE)
-    if options.cmd is None:
+    if ((options.cmd is None) or (options.cmd not in supportedCmds)):
         print("you must specify a command; supported commands are from the list:")
         print(supportedCmds)
         exit(os.EX_USAGE)
-        
+    if ((options.fwFileBit is not None) and ("bit" not in options.fwFileBit)):
+        print("you must supply a *.bit file to '--fwFileBit'")
+        exit(os.EX_USAGE)
+    if ((options.fwFileMCS is not None) and ("mcs" not in options.fwFileMCS)):
+        print("you must supply a *.mcs file to '--fwFileMCS'")
+        exit(os.EX_USAGE)
+
     main(
             cardName=options.cardName,
             instructions=options.cmd,
