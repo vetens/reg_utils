@@ -17,8 +17,8 @@ RWREG_VER_MAJOR:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{spli
 RWREG_VER_MINOR:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{split($$0,a," "); print a[2];}' | awk '{split($$0,b,":"); print b[2];}')
 RWREG_VER_PATCH:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{split($$0,a," "); print a[3];}' | awk '{split($$0,b,":"); print b[2];}')
 
-include $(BUILD_HOME)/$(Project)/config/mfZynq.mk
 include $(BUILD_HOME)/$(Project)/config/mfCommonDefs.mk
+include $(BUILD_HOME)/$(Project)/config/mfZynq.mk
 include $(BUILD_HOME)/$(Project)/config/mfRPMRules.mk
 
 IncludeDirs= ${BUILD_HOME}/${Project}/${Package}/${Arch}/include
