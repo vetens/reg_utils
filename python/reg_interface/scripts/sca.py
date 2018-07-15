@@ -108,36 +108,24 @@ if __name__ == '__main__':
             #'test1',
             #'test2',
             ]
-
-    strSupCmds = "[ %s"%supportedCmds[0]
-    for idx in range(1,len(supportedCmds)):
-        strSupCmds = "%s, %s"%(strSupCmds,supportedCmds[idx])
-    strSupCmds = "%s ]"%strSupCmds
-
     from optparse import OptionParser
-    parser = OptionParser()
-    parser.add_option("--cardName", type="string", dest="cardName", default=None,
+    import argparse
+    parser = argparse.ArgumentParser(description='Arguments to supply to sca.py')
+    parser.add_argument("--cardName", type="string", dest="cardName", default=None, required=True,
                       help="hostname of the AMC you are connecting too, e.g. 'eagle64'; if running on an AMC use 'local' instead", metavar="cardName")
-    parser.add_option("--cmd", type="string", dest="cmd", default=None,
-                      help="command to be executed from list: %s"%strSupCmds, metavar="cardName")
-    parser.add_option("--fwFileBit", type="string", dest="fwFileBit", default=None,
+    parser.add_argument("--cmd", type="string", dest="cmd", default=None, required=True, choices=supportedCmds,
+                      help="command to be executed", metavar="cardName")
+    parser.add_argument("--fwFileBit", type="string", dest="fwFileBit", default=None,
                       help="firmware bit file to be used with either 'program-fpga' or 'compare-mcs-bit' commands (e.g. --cmd='program-fpga')", metavar="fwFileBit")
-    parser.add_option("--fwFileMCS", type="string", dest="fwFileMCS", default=None,
+    parser.add_argument("--fwFileMCS", type="string", dest="fwFileMCS", default=None,
                       help="firmware mcs file to be used with either 'program-fpga' or 'compare-mcs-bit' commands (e.g. --cmd='program-fpga')", metavar="fwFileBit")
-    parser.add_option("--gpioValue", type="int", dest="gpioValue", default=None,
+    parser.add_argument("--gpioValue", type="int", dest="gpioValue", default=None,
                       help="gpio value to write with either 'gpio-set-direction' or 'gpio-set-output' commands (e.g. --cmd='gpio-set-direction')", metavar="gpioValue")
-    parser.add_option("--ohMask", type="int", dest="ohMask", default=0x1,
+    parser.add_argument("--ohMask", type="int", dest="ohMask", default=0x1,
                       help="ohMask to apply, a 1 in the n^th bit indicates the n^th OH should be considered", metavar="ohMask")
     (options, args) = parser.parse_args()
 
     import os
-    if options.cardName is None:
-        print("you must specify the --cardName argument")
-        exit(os.EX_USAGE)
-    if ((options.cmd is None) or (options.cmd not in supportedCmds)):
-        print("you must specify a command; supported commands are from the list:")
-        print(supportedCmds)
-        exit(os.EX_USAGE)
     if ((options.fwFileBit is not None) and ("bit" not in options.fwFileBit)):
         print("you must supply a *.bit file to '--fwFileBit'")
         exit(os.EX_USAGE)
