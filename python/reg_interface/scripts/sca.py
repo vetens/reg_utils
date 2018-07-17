@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from reg_utils.reg_interface.common.reg_xml_parser import getNode, parseXML
+from reg_utils.reg_interface.common.reg_xml_parser import getNode, parseInt, parseXML
 from reg_utils.reg_interface.common.reg_base_ops import *
 from reg_utils.reg_interface.common.print_utils import *
 from reg_utils.reg_interface.common.bit_utils import *
@@ -11,8 +11,6 @@ from time import *
 import socket
 
 def compareFwFiles(args):
-    #scaInit(args)
-
     if ((args.fwFileBit is None) or (args.fwFileMCS is None)):
         print("Usage: sca.py <cardName> <ohMask> compare-mcs-bit --fwFileMCS=<mcs_filename> --fwFileBit=<bit_filename>")
         return
@@ -48,7 +46,7 @@ def fpgaProgram(args):
     scaInit(args)
 
     hostname = socket.gethostname()
-    if 'eagle' not in hostname):
+    if 'eagle' not in hostname:
         printRed("This method should only be called from the card!!")
         return
     
@@ -137,10 +135,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Arguments to supply to sca.py')
 
     # Positional arguments
-    parser.add_argument("cardName", type=str, dest="cardName", required=True,
-                      help="hostname of the AMC you are connecting too, e.g. 'eagle64'; if running on an AMC use 'local' instead", metavar="cardName")
-    parser.add_argument("ohMask", type=int, dest="ohMask", required=True,
-                      help="ohMask to apply, a 1 in the n^th bit indicates the n^th OH should be considered", metavar="ohMask")
+    parser.add_argument("cardName", type=str, help="hostname of the AMC you are connecting too, e.g. 'eagle64'; if running on an AMC use 'local' instead", metavar="cardName")
+    parser.add_argument("ohMask", type=parseInt, help="ohMask to apply, a 1 in the n^th bit indicates the n^th OH should be considered", metavar="ohMask")
     subparserCmds = parser.add_subparsers(help="sca command help")
 
     # Create subparser for compare-mcs-bit
@@ -166,9 +162,9 @@ if __name__ == '__main__':
     # Create subparser for programming the fpga
     parser_programFPGA = subparserCmds.add_parser("program-fpga", help="Program OH FPGA with a bitfile or an MCS file")
     fpgaFileGroup = parser_programFPGA.add_mutually_exclusive_group()
-    fpgaFileGroup.add_argument("--fwFileBit", type="string", dest="fwFileBit", default=None,
+    fpgaFileGroup.add_argument("--fwFileBit", type=str, dest="fwFileBit", default=None,
                       help="firmware bit file to program fpga with", metavar="fwFileBit")
-    fpgaFileGroup.add_argument("--fwFileMCS", type="string", dest="fwFileMCS", default=None,
+    fpgaFileGroup.add_argument("--fwFileMCS", type=str, dest="fwFileMCS", default=None,
                       help="firmware mcs file to program fpga with", metavar="fwFileBit")
     parser_programFPGA.set_defaults(func=fpgaProgram)
 
@@ -179,16 +175,24 @@ if __name__ == '__main__':
     # Create subparser for gpio-set-direction
     # Default corresponds to setting SCA output direction on OHv3c
     parser_setGPIODirection = subparserCmds.add_parser("gpio-set-direction", help="Set the GPIO Direction Mask")
-    parser_setGPIODirection.add_argument("--gpioValue", type=int, dest="gpioValue", default=0x0fffff8f, metavar="gpioValue",
+    parser_setGPIODirection.add_argument("--gpioValue", type=parseInt, dest="gpioValue", default=0x0fffff8f, metavar="gpioValue",
             help="32 bit number where each bit represents a GPIO channel.  If a given bit is high it means that this GPIO channel will be set to OUTPUT mode, and otherwise it will be set to INPUT mode")
     parser_setGPIODirection.set_defaults(func=gpioSetDirection)
    
     # Create subparser for gpio-set-output
     # Default corresponds to setting SCA output value on the OHv3c
-    parser_setGPIOOutput = subparserCmds.add_argument("gpio-set-output", help="Set the GPIO output values")
-    parser_setGPIOOutput.add_argument("--gpioValue", type=int, dest="gpioValue", default=0xf00000f0, metavar="gpioValue",
+    parser_setGPIOOutput = subparserCmds.add_parser("gpio-set-output", help="Set the GPIO output values")
+    parser_setGPIOOutput.add_argument("--gpioValue", type=parseInt, dest="gpioValue", default=0xf00000f0, metavar="gpioValue",
             help="32 bit number where each bit represents the 32 GPIO channels state")
     parser_setGPIOOutput.set_defaults(func=gpioSetOutput)
+
+    # Create subparser for sca reset 
+    parser_reset = subparserCmds.add_parser("r", help="SCA reset will be done")
+    parser_reset.set_defaults(func=scaReset)
+
+    # Create subparser for sysmon
+    parser_sysmon = subparserCmds.add_parser("sysmon", help="Read FPGA sysmon data repeatedly")
+    parser_sysmon.set_defaults(func=sysmon)
 
     # Parser the arguments and call the appropriate function
     args = parser.parse_args()
