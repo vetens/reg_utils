@@ -11,16 +11,12 @@ from time import *
 import socket
 
 def compareFwFiles(args):
-    if ((args.fwFileBit is None) or (args.fwFileMCS is None)):
-        print("Usage: sca.py <cardName> <ohMask> compare-mcs-bit --fwFileMCS=<mcs_filename> --fwFileBit=<bit_filename>")
-        return
-
     import os
     if "bit" not in args.fwFileBit:
-        print("you must supply a *.bit file to '--fwFileBit'")
+        print("you must supply a *.bit file to 'fwFileBit'")
         exit(os.EX_USAGE)
     if "mcs" not in args.fwFileMCS:
-        print("you must supply a *.mcs file to '--fwFileMCS'")
+        print("you must supply a *.mcs file to 'fwFileMCS'")
         exit(os.EX_USAGE)
 
     from reg_utils.reg_interface.arm.program_fpga import compare_mcs_bit
@@ -51,10 +47,6 @@ def fpgaProgram(args):
         return
     
     import os
-    if ((args.fwFile is None):
-        print("you must supply either a *.bit or a *.mcs file to '--fwFile'")
-        exit(os.EX_USAGE)
-
     if "bit" in args.fwFile:
         ftype = "bit"
         filename = args.fwFile
@@ -62,8 +54,8 @@ def fpgaProgram(args):
         ftype = "mcs"
         filename = args.fwFile
     else:
-        printRed('Usage: sca.py local <ohMask> program-fpga --fwFile=<filename>')
-        print("you must supply either a *.bit or a *.mcs file to '--fwFile'")
+        printRed('Usage: sca.py local <ohMask> program-fpga fwFile=<filename>')
+        print("you must supply either a *.bit or a *.mcs file to 'fwFile'")
         return
     
     from reg_utils.reg_interface.arm.program_fpga import program_fpga
@@ -77,21 +69,11 @@ def gpioRead(args):
 
 def gpioSetDirection(args):
     scaInit(args)
-
-    if args.gpioValue is None:
-        print('Usage: sca.py <cardName> <ohMask> gpio-set-direction --gpioVale=<direction-mask>')
-        print('direction-mask is a 32 bit number where each bit represents a GPIO channel -- if a given bit is high it means that this GPIO channel will be set to OUTPUT mode, and otherwise it will be set to INPUT mode')
-        return
     gpio.set_direction(args.ohMask,args.gpioValue)
     return
 
 def gpioSetOutput(args):
     scaInit(args)
-
-    if args.gpioValue is None:
-        print('Usage: sca.py <cardName> <ohMask> gpio-set-output --gpioValue=<output-data>')
-        print('output-data is a 32 bit number representing the 32 GPIO channels state')
-        return
     gpio.set_output(args.ohMask,args.gpioValue)
 
 def scaInit(args):
@@ -138,10 +120,8 @@ if __name__ == '__main__':
 
     # Create subparser for compare-mcs-bit
     parser_compareFwFiles = subparserCmds.add_parser("compare-mcs-bit", help="compares a *.mcs with a *.bit file to check if the firmware is the same")
-    parser_compareFwFiles.add_argument("--fwFileBit",type=str, dest="fwFileBit", required=True,
-            help="firmware bit file to be used in the comparison", metavar="fwFileBit")
-    parser_compareFwFiles.add_argument("--fwFileMCS",type=str, dest="fwFileMCS", required=True,
-            help="firmware mcs file to be used in the comparison", metavar="fwFileMCS")
+    parser_compareFwFiles.add_argument("fwFileMCS",type=str, help="firmware mcs file to be used in the comparison", metavar="fwFileMCS")
+    parser_compareFwFiles.add_argument("fwFileBit",type=str, help="firmware bit file to be used in the comparison", metavar="fwFileBit")
     parser_compareFwFiles.set_defaults(func=compareFwFiles)
 
     # Create subparser for fpga hard reset 
@@ -158,9 +138,7 @@ if __name__ == '__main__':
 
     # Create subparser for programming the fpga
     parser_programFPGA = subparserCmds.add_parser("program-fpga", help="Program OH FPGA with a bitfile or an MCS file")
-    fpgaFileGroup = parser_programFPGA.add_mutually_exclusive_group()
-    fpgaFileGroup.add_argument("--fwFile", type=str, dest="fwFile", required=True,
-                      help="firmware file to program fpga with, must end in either '*.bit' or '*.mcs'", metavar="fwFile")
+    parser_programFPGA.add_argument("fwFile", type=str, help="firmware file to program fpga with, must end in either '*.bit' or '*.mcs'", metavar="fwFile")
     parser_programFPGA.set_defaults(func=fpgaProgram)
 
     # Create subparser for gpio-read-input
@@ -170,14 +148,14 @@ if __name__ == '__main__':
     # Create subparser for gpio-set-direction
     # Default corresponds to setting SCA output direction on OHv3c
     parser_setGPIODirection = subparserCmds.add_parser("gpio-set-direction", help="Set the GPIO Direction Mask")
-    parser_setGPIODirection.add_argument("--gpioValue", type=parseInt, dest="gpioValue", default=0x0fffff8f, metavar="gpioValue",
+    parser_setGPIODirection.add_argument("gpioValue", type=parseInt, default=0x0fffff8f, metavar="gpioValue",
             help="32 bit number where each bit represents a GPIO channel.  If a given bit is high it means that this GPIO channel will be set to OUTPUT mode, and otherwise it will be set to INPUT mode")
     parser_setGPIODirection.set_defaults(func=gpioSetDirection)
    
     # Create subparser for gpio-set-output
     # Default corresponds to setting SCA output value on the OHv3c
     parser_setGPIOOutput = subparserCmds.add_parser("gpio-set-output", help="Set the GPIO output values")
-    parser_setGPIOOutput.add_argument("--gpioValue", type=parseInt, dest="gpioValue", default=0xf00000f0, metavar="gpioValue",
+    parser_setGPIOOutput.add_argument("gpioValue", type=parseInt, default=0xf00000f0, metavar="gpioValue",
             help="32 bit number where each bit represents the 32 GPIO channels state")
     parser_setGPIOOutput.set_defaults(func=gpioSetOutput)
 
