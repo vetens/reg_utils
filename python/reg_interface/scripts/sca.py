@@ -141,7 +141,7 @@ if __name__ == '__main__':
     parser_compareFwFiles.add_argument("--fwFileBit",type=str, dest="fwFileBit", required=True,
             help="firmware bit file to be used in the comparison", metavar="fwFileBit")
     parser_compareFwFiles.add_argument("--fwFileMCS",type=str, dest="fwFileMCS", required=True,
-            help="firmware bit file to be used in the comparison", metavar="fwFileMCS")
+            help="firmware mcs file to be used in the comparison", metavar="fwFileMCS")
     parser_compareFwFiles.set_defaults(func=compareFwFiles)
 
     # Create subparser for fpga hard reset 
