@@ -51,22 +51,19 @@ def fpgaProgram(args):
         return
     
     import os
-    if ((args.fwFileBit is not None) and ("bit" not in args.fwFileBit)):
-        print("you must supply a *.bit file to '--fwFileBit'")
-        exit(os.EX_USAGE)
-    if ((args.fwFileMCS is not None) and ("mcs" not in args.fwFileMCS)):
-        print("you must supply a *.mcs file to '--fwFileMCS'")
+    if ((args.fwFile is None):
+        print("you must supply either a *.bit or a *.mcs file to '--fwFile'")
         exit(os.EX_USAGE)
 
-    if args.fwFileBit is not None:
+    if "bit" in args.fwFile:
         ftype = "bit"
-        filename = args.fwFileBit
-    elif args.fwFileMCS is not None:
+        filename = args.fwFile
+    elif "mcs" in args.fwFile:
         ftype = "mcs"
-        filename = args.fwFileMCS
+        filename = args.fwFile
     else:
-        printRed('Usage: sca.py local <ohMask> program-fpga --fwFileBit=<filename>')
-        printRed('if your firmware file is a *.msc file use the --fwFileMCS argument')
+        printRed('Usage: sca.py local <ohMask> program-fpga --fwFile=<filename>')
+        print("you must supply either a *.bit or a *.mcs file to '--fwFile'")
         return
     
     from reg_utils.reg_interface.arm.program_fpga import program_fpga
@@ -162,10 +159,8 @@ if __name__ == '__main__':
     # Create subparser for programming the fpga
     parser_programFPGA = subparserCmds.add_parser("program-fpga", help="Program OH FPGA with a bitfile or an MCS file")
     fpgaFileGroup = parser_programFPGA.add_mutually_exclusive_group()
-    fpgaFileGroup.add_argument("--fwFileBit", type=str, dest="fwFileBit", default=None,
-                      help="firmware bit file to program fpga with", metavar="fwFileBit")
-    fpgaFileGroup.add_argument("--fwFileMCS", type=str, dest="fwFileMCS", default=None,
-                      help="firmware mcs file to program fpga with", metavar="fwFileBit")
+    fpgaFileGroup.add_argument("--fwFile", type=str, dest="fwFile", required=True,
+                      help="firmware file to program fpga with, must end in either '*.bit' or '*.mcs'", metavar="fwFile")
     parser_programFPGA.set_defaults(func=fpgaProgram)
 
     # Create subparser for gpio-read-input
