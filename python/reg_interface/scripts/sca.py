@@ -8,37 +8,84 @@ from reg_utils.reg_interface.common.jtag import initJtagRegAddrs
 from reg_utils.reg_interface.common.sca_utils import *
 from reg_utils.reg_interface.common.sca_common_utils import *
 from time import *
-import array
-import struct
 import socket
 
-def main():
+def compareFwFiles(args):
+    import os
+    if "bit" not in args.fwFileBit:
+        print("you must supply a *.bit file to 'fwFileBit'")
+        exit(os.EX_USAGE)
+    if "mcs" not in args.fwFileMCS:
+        print("you must supply a *.mcs file to 'fwFileMCS'")
+        exit(os.EX_USAGE)
 
-    instructions = ""
-    ohMask = 0
-    ohList = []
+    from reg_utils.reg_interface.arm.program_fpga import compare_mcs_bit
+    compare_mcs_bit(args.fwFileMCS, args.fwFileBit)
+    return
 
-    if len(sys.argv) < 4:
-        print('Usage: sca.py <card_name> <oh_mask> <instructions>. If running on the card, put `local` instead of hostname')
-        print('instructions:')
-        print('  r:        SCA reset will be done')
-        print('  h:        FPGA hard reset will be done')
-        print('  hh:       FPGA hard reset will be asserted and held')
-        print('  fpga-id:  FPGA ID will be read through JTAG')
-        print('  sysmon:   Read FPGA sysmon data repeatedly')
-        print('  program-fpga:   Program OH FPGA with a bitfile or an MCS file. Requires a parameter "bit" or "mcs" and a filename')
+def fpgaHardReset(args):
+    scaInit(args)
+    fpga_single_hard_reset()
+    return
+
+def fpgaHeldInHardReset(args):
+    ohList = scaInit(args)
+    fpga_keep_hard_reset(ohList)
+    return
+
+def fpgaId(args):
+    scaInit(args)
+    read_fpga_id(args.ohMask)
+    return
+
+def fpgaProgram(args):
+    scaInit(args)
+
+    hostname = socket.gethostname()
+    if 'eagle' not in hostname:
+        printRed("This method should only be called from the card!!")
         return
+    
+    import os
+    if "bit" in args.fwFile:
+        ftype = "bit"
+        filename = args.fwFile
+    elif "mcs" in args.fwFile:
+        ftype = "mcs"
+        filename = args.fwFile
     else:
-        ohMask = parseInt(sys.argv[2])
-        ohList = getOHlist(ohMask)
-        instructions = sys.argv[3]
+        printRed('Usage: sca.py local <ohMask> program-fpga fwFile=<filename>')
+        print("you must supply either a *.bit or a *.mcs file to 'fwFile'")
+        return
+    
+    from reg_utils.reg_interface.arm.program_fpga import program_fpga
+    program_fpga(args.ohMask,ftype,filename)
+    return
+
+def gpioRead(args):
+    scaInit(args)
+    gpio.read_input(args.ohMask)
+    return
+
+def gpioSetDirection(args):
+    scaInit(args)
+    gpio.set_direction(args.ohMask,args.gpioValue)
+    return
+
+def gpioSetOutput(args):
+    scaInit(args)
+    gpio.set_output(args.ohMask,args.gpioValue)
+
+def scaInit(args):
+    ohList = getOHlist(args.ohMask)
 
     parseXML()
     hostname = socket.gethostname()
     if 'eagle' in hostname:
         pass
     else:
-        rpc_connect(sys.argv[1])
+        hostname = args.cardName
+        rpc_connect(args.cardName)
     initJtagRegAddrs()
 
     heading("Hola, I'm SCA controller tester :)")
@@ -47,68 +94,79 @@ def main():
         if not 'r' in instructions:
             exit()
 
-    writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.MANUAL_CONTROL.LINK_ENABLE_MASK'), ohMask)
+    writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.MANUAL_CONTROL.LINK_ENABLE_MASK'), args.ohMask)
 
-    if instructions == 'r':
-        sca_reset(ohList)
-    elif instructions == 'hh':
-        fpga_keep_hard_reset(ohList)
-    elif instructions == 'h':
-        fpga_single_hard_reset()
-    elif instructions == 'fpga-id':
-        read_fpga_id(ohMask)
+    return ohList
 
-    elif instructions == 'sysmon':
-        run_sysmon(ohMask)
+def scaReset(args):
+    ohList = scaInit(args)
+    sca_reset(ohList)
+    return
 
-    elif instructions == 'program-fpga':
-        hostname = socket.gethostname()
-        if 'eagle' in hostname:
-            from reg_interface.arm.program_fpga import program_fpga
-        else:
-            printRed("This method should only be called from the card!!")
-            return
-        if len(sys.argv) < 5:
-            printRed('Usage: sca.py local program-fpga <file-type> <filename>')
-            printRed('file-type can be "mcs" or "bit"')
-            return
-
-        ftype = sys.argv[4]
-        filename = sys.argv[5]
-        program_fpga(ohMask,ftype,filename)
-
-    elif instructions == 'test1':
-        test1()
-        
-    elif instructions == 'test2':
-        test2()
-
-    elif instructions == 'compare-mcs-bit':
-        if len(sys.argv) < 5:
-            print("Usage: sca.py local compare-mcs-bit <mcs_filename> <bit_filename>")
-            return
-        mcsFilename = sys.argv[3]
-        bitFilename = sys.argv[4]
-        compare_mcs_bit(mcsFilename, bitFilename)
-
-    elif instructions == 'gpio-set-direction':
-        if len(sys.argv) < 4:
-            print('Usage: sca.py local gpio-set-direction <direction-mask>')
-            print('direction-mask is a 32 bit number where each bit represents a GPIO channel -- if a given bit is high it means that this GPIO channel will be set to OUTPUT mode, and otherwise it will be set to INPUT mode')
-            return
-        directionMask = parseInt(sys.argv[3])
-        gpio.set_direction(ohMask,directionMask)
-
-    elif instructions == 'gpio-set-output':
-        if len(sys.argv) < 4:
-            print('Usage: sca.py local gpio-set-output <output-data>')
-            print('output-data is a 32 bit number representing the 32 GPIO channels state')
-            return
-        outputData = parseInt(sys.argv[3])
-        gpio.set_output(ohMask,outputData)
-
-    elif instructions == 'gpio-read-input':
-        gpio.read_input(ohMask)
+def sysmon(args):
+    scaInit(args)
+    run_sysmon(args.ohMask)
+    return
  
 if __name__ == '__main__':
-    main()
+    # create the parser
+    import argparse
+    parser = argparse.ArgumentParser(description='Arguments to supply to sca.py')
+
+    # Positional arguments
+    parser.add_argument("cardName", type=str, help="hostname of the AMC you are connecting too, e.g. 'eagle64'; if running on an AMC use 'local' instead", metavar="cardName")
+    parser.add_argument("ohMask", type=parseInt, help="ohMask to apply, a 1 in the n^th bit indicates the n^th OH should be considered", metavar="ohMask")
+    subparserCmds = parser.add_subparsers(help="sca command help")
+
+    # Create subparser for compare-mcs-bit
+    parser_compareFwFiles = subparserCmds.add_parser("compare-mcs-bit", help="compares a *.mcs with a *.bit file to check if the firmware is the same")
+    parser_compareFwFiles.add_argument("fwFileMCS",type=str, help="firmware mcs file to be used in the comparison", metavar="fwFileMCS")
+    parser_compareFwFiles.add_argument("fwFileBit",type=str, help="firmware bit file to be used in the comparison", metavar="fwFileBit")
+    parser_compareFwFiles.set_defaults(func=compareFwFiles)
+
+    # Create subparser for fpga hard reset 
+    parser_reset = subparserCmds.add_parser("h", help="FPGA hard reset will be done")
+    parser_reset.set_defaults(func=fpgaHardReset)
+
+    # Create subparser for holding fpga in hard reset 
+    parser_reset = subparserCmds.add_parser("hh", help="FPGA hard reset will be asserted and held")
+    parser_reset.set_defaults(func=fpgaHeldInHardReset)
+
+    # Create subparser for getting fpga ID 
+    parser_reset = subparserCmds.add_parser("fpga-id", help="FPGA ID will be read through JTAG")
+    parser_reset.set_defaults(func=fpgaId)
+
+    # Create subparser for programming the fpga
+    parser_programFPGA = subparserCmds.add_parser("program-fpga", help="Program OH FPGA with a bitfile or an MCS file")
+    parser_programFPGA.add_argument("fwFile", type=str, help="firmware file to program fpga with, must end in either '*.bit' or '*.mcs'", metavar="fwFile")
+    parser_programFPGA.set_defaults(func=fpgaProgram)
+
+    # Create subparser for gpio-read-input
+    parser_readGPIO = subparserCmds.add_parser("gpio-read-input", help="Read GPIO settings of the SCA")
+    parser_readGPIO.set_defaults(func=gpioRead)
+
+    # Create subparser for gpio-set-direction
+    # Default corresponds to setting SCA output direction on OHv3c
+    parser_setGPIODirection = subparserCmds.add_parser("gpio-set-direction", help="Set the GPIO Direction Mask")
+    parser_setGPIODirection.add_argument("gpioValue", type=parseInt, default=0x0fffff8f, metavar="gpioValue",
+            help="32 bit number where each bit represents a GPIO channel.  If a given bit is high it means that this GPIO channel will be set to OUTPUT mode, and otherwise it will be set to INPUT mode")
+    parser_setGPIODirection.set_defaults(func=gpioSetDirection)
+   
+    # Create subparser for gpio-set-output
+    # Default corresponds to setting SCA output value on the OHv3c
+    parser_setGPIOOutput = subparserCmds.add_parser("gpio-set-output", help="Set the GPIO output values")
+    parser_setGPIOOutput.add_argument("gpioValue", type=parseInt, default=0xf00000f0, metavar="gpioValue",
+            help="32 bit number where each bit represents the 32 GPIO channels state")
+    parser_setGPIOOutput.set_defaults(func=gpioSetOutput)
+
+    # Create subparser for sca reset 
+    parser_reset = subparserCmds.add_parser("r", help="SCA reset will be done")
+    parser_reset.set_defaults(func=scaReset)
+
+    # Create subparser for sysmon
+    parser_sysmon = subparserCmds.add_parser("sysmon", help="Read FPGA sysmon data repeatedly")
+    parser_sysmon.set_defaults(func=sysmon)
+
+    # Parser the arguments and call the appropriate function
+    args = parser.parse_args()
+    args.func(args)

@@ -1,7 +1,10 @@
 from reg_xml_parser import getNode
 from reg_base_ops import writeReg
+from print_utils import *
 from bit_utils import hex
 from sca_common_utils import getOHlist, sendScaCommand
+from time import sleep
+
 def set_direction(ohMask, directionMask):
     subheading('Disabling monitoring')
     writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.ADC_MONITORING.MONITORING_OFF'), 0xffffffff)
