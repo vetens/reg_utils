@@ -76,7 +76,7 @@ def gpioSetOutput(args):
     scaInit(args)
     gpio.set_output(args.ohMask,args.gpioValue)
 
-def scaInit(args):
+def scaInit(args, isReset=False):
     ohList = getOHlist(args.ohMask)
 
     parseXML()
@@ -91,7 +91,7 @@ def scaInit(args):
     heading("Hola, I'm SCA controller tester :)")
 
     if not checkStatus(ohList):
-        if not 'r' in instructions:
+        if not isReset:
             exit()
 
     writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.MANUAL_CONTROL.LINK_ENABLE_MASK'), args.ohMask)
@@ -99,7 +99,7 @@ def scaInit(args):
     return ohList
 
 def scaReset(args):
-    ohList = scaInit(args)
+    ohList = scaInit(args=args,isReset=True)
     sca_reset(ohList)
     return
 
