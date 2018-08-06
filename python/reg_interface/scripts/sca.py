@@ -99,8 +99,8 @@ def scaInit(args, isReset=False):
     return ohList
 
 def scaReset(args):
-    ohList = scaInit(args=args,isReset=True)
-    sca_reset(ohList)
+    scaInit(args=args,isReset=True)
+    sca_reset(args.ohMask)
     return
 
 def sysmon(args):

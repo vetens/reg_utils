@@ -11,10 +11,22 @@ import array
 import struct
 import socket
 
-def sca_reset(ohList):
+def sca_reset(ohMask):
     subheading('Reseting the SCA')
+
+    # Set the sca reset mask if it exists
+    scaResetMaskNode = getNode('GEM_AMC.SLOW_CONTROL.SCA.CTRL.SCA_RESET_ENABLE_MASK')
+    if scaResetMaskNode is not None:
+        origMask = readReg(scaResetMaskNode)
+        writeReg(scaResetMaskNode, ohMask)
+
     writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.CTRL.MODULE_RESET'), 0x1)
-    checkStatus(ohList)
+
+    # Reset the sca reset mask if it exists
+    if scaResetMaskNode is not None:
+        writeReg(scaResetMaskNode, origMask)
+
+    checkStatus(getOHlist(ohMask))
 
 def fpga_single_hard_reset():
     subheading('Issuing FPGA Hard Reset')
