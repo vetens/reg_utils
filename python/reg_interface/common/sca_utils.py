@@ -19,12 +19,14 @@ def sca_reset(ohMask):
     if scaResetMaskNode is not None:
         origMask = readReg(scaResetMaskNode)
         writeReg(scaResetMaskNode, ohMask)
+    else:
+        print("No SCA_RESET_ENABLE_MASK register detected, reset will be applied to all links")
 
     writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.CTRL.MODULE_RESET'), 0x1)
 
     # Reset the sca reset mask if it exists
     if scaResetMaskNode is not None:
-        writeReg(scaResetMaskNode, origMask)
+        writeReg(scaResetMaskNode, int(origMask,16))
 
     checkStatus(getOHlist(ohMask))
 
