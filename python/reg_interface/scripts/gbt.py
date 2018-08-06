@@ -26,7 +26,7 @@ if __name__ == '__main__':
         pass
     else:
        printRed("This command should only be called from a CTP7!!!")
-       return
+       exit(os.EX_USAGE)
         
     if ohSelect > 11:
         printRed("The given OH index (%d) is out of range (must be 0-11)" % ohSelect)
