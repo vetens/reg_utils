@@ -26,7 +26,8 @@ $(SUBPACKAGES.RPM):
 	$(MAKE) -C $(patsubst %.rpm,%, $@) rpm
 
 $(SUBPACKAGES.DOC):
-	$(MAKE) -C $(patsubst %.doc,%, $@) html
+	@echo "Nothing to do"
+	#$(MAKE) -C $(patsubst %.doc,%, $@) html
 
 $(SUBPACKAGES.CLEANRPM):
 	$(MAKE) -C $(patsubst %.cleanrpm,%, $@) cleanrpm

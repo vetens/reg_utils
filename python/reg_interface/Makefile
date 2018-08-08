@@ -30,7 +30,6 @@ include $(BUILD_HOME)/$(Project)/config/mfPythonDefs.mk
 # include $(BUILD_HOME)/$(Project)/config/mfDefs.mk
 
 include $(BUILD_HOME)/$(Project)/config/mfPythonRPM.mk
-include $(BUILD_HOME)/$(Project)/config/mfSphinx.mk
 
 default:
 	@echo "Running default target"
@@ -49,6 +48,9 @@ preprpm: default
 	@cp -rf arm common $(PackageDir)
 	-cp -rf README.md LICENSE CHANGELOG.md MANIFEST.in requirements.txt $(PackageDir)
 	-cp -rf README.md LICENSE CHANGELOG.md MANIFEST.in requirements.txt pkg
+
+cleandoc:
+	@echo "Nothing to do"
 
 clean:
 	@echo "Running clean target"

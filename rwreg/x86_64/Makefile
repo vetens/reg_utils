@@ -35,7 +35,7 @@ OBJS_RPC_SA = $(SRCS_RPC_SA:.cc=.o)
 
 RPC_SA_LIB=${BUILD_HOME}/${Project}/${Package}/${Arch}/lib/librwreg.so
 
-.PHONY: clean rpc prerpm
+.PHONY: clean rpc prerpm doc
 
 default:
 	@echo "Running default target"
@@ -60,10 +60,12 @@ $(RPC_SA_LIB): $(OBJS_RPC_SA)
 $(OBJS_RPC_SA):$(SRCS_RPC_SA)
 	$(CC) $(CCFLAGS) $(INC) -c -o $@ $<
 
+doc:
+	doxygen doc/${Package}.doxy
 
 clean: cleanrpm
 	-${RM} ${RPC_SA_LIB} ${OBJS_RPC_SA} 
 	-rm -rf $(PackageDir)
 
 cleandoc: 
-	@echo "TO DO"
+	-rm-rf doc/html  doc/latex  doc/xml

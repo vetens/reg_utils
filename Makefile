@@ -1,3 +1,5 @@
+Project := reg_utils
+include $(BUILD_HOME)/$(Project)/config/mfSphinx.mk
 SUBPACKAGES := \
         python \
 	rwreg
@@ -14,6 +16,7 @@ all: $(SUBPACKAGES) $(SUBPACKAGES.RPM) $(SUBPACKAGES.DOC)
 rpm: $(SUBPACKAGES) $(SUBPACKAGES.RPM)
 
 doc: $(SUBPACKAGES.DOC)
+	make html
 
 cleanrpm: $(SUBPACKAGES.CLEANRPM)
 

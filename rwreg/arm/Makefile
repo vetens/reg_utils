@@ -56,5 +56,8 @@ clean: cleanrpm
 	-${RM} ${LIB_ARM_RWREG} ${LIB_ARM_RWREG_OBJS}
 	-rm -rf $(PackageDir)
 
+doc: 
+	@echo "TO DO"
+
 cleandoc: 
 	@echo "TO DO"
