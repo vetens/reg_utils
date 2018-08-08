@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
 from reg_utils.reg_interface.arm.gbt_utils import programGBT
+from reg_utils.reg_interface.common.print_utils import printRed
 from time import *
 import array
 import struct
 import os
+import sys
+import socket
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:
@@ -18,6 +21,13 @@ if __name__ == '__main__':
         gbtSelect = int(sys.argv[2])
         command = sys.argv[3]
     
+    hostname = socket.gethostname()
+    if 'eagle' in hostname:
+        pass
+    else:
+       printRed("This command should only be called from a CTP7!!!")
+       exit(os.EX_USAGE)
+        
     if ohSelect > 11:
         printRed("The given OH index (%d) is out of range (must be 0-11)" % ohSelect)
         exit(os.EX_USAGE)

@@ -281,7 +281,6 @@ def parseInt(s):
     else:
         return int(string)
 
-
 def substituteVars(string, vars):
     """
     

@@ -10,14 +10,13 @@ PackageDir   := pkg/$(ShortPackage)
 Arch         := x86_64
 Packager     := Mykhailo Dalchenko
 
-RWREG_VER_MAJOR=1
-RWREG_VER_MINOR=0
-RWREG_VER_PATCH=0
+RWREG_VER_MAJOR:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{split($$0,a," "); print a[1];}' | awk '{split($$0,b,":"); print b[2];}')
+RWREG_VER_MINOR:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{split($$0,a," "); print a[2];}' | awk '{split($$0,b,":"); print b[2];}')
+RWREG_VER_PATCH:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{split($$0,a," "); print a[3];}' | awk '{split($$0,b,":"); print b[2];}')
 
 include $(BUILD_HOME)/$(Project)/config/mfCommonDefs.mk
 include $(BUILD_HOME)/$(Project)/config/mfRPMRules.mk
 
-CC=g++
 CCFLAGS=-O0 -g3 -fno-inline -Wall -fPIC -pthread -m64
 
 LDFLAGS=-shared
