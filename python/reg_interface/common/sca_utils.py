@@ -43,10 +43,13 @@ def fpga_keep_hard_reset(ohList):
 
 def fpga_remove_hard_reset(ohList):
     subheading('Disabling monitoring')
+    monMask = readReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.ADC_MONITORING.MONITORING_OFF'))
     writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.ADC_MONITORING.MONITORING_OFF'), 0xffffffff)
     sleep(0.01)
     subheading('Asserting FPGA Hard Reset (and keeping it in reset)')
     sendScaCommand(ohList, 0x2, 0x10, 0x4, 0xffffffff, False)
+    subheading('Restoring monitoring')
+    writeReg(getNode('GEM_AMC.SLOW_CONTROL.SCA.ADC_MONITORING.MONITORING_OFF'), monMask)
 
 def read_fpga_id(ohMask):
     enableJtag(ohMask)
