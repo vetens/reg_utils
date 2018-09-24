@@ -62,14 +62,6 @@ if __name__ == '__main__':
     print >> f, "|:------ | :------------ | :--------------- | :-------------------- | :---------------- | :------------------- | :-------------- |"
     print >> f, "| before | "+crc_error_cnt_before+"    | "+packet_error_cnt_before+"       | "+bitstuffing_error_cnt_before+"            | "+timeout_error_cnt_before+"        | "+axi_strobe_error_cnt_before+"           | "+transaction_cnt_before+"      |"
 
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.CRC_ERROR_CNT = "+crc_error_cnt_before
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.PACKET_ERROR_CNT = "+packet_error_cnt_before
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.BITSTUFFING_ERROR_CNT = "+ bitstuffing_error_cnt_before
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.TIMEOUT_ERROR_CNT = "+timeout_error_cnt_before
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.AXI_STROBE_ERROR_CNT = "+axi_strobe_error_cnt_before
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.TRANSACTION_CNT = "+transaction_cnt_before
-#    print "GEM_AMC.GEM_SYSTEM.CTRL.LINK_RESET = "+link_reset_before
-    
     node = getNode(sys.argv[1])
 
     d = {}
@@ -95,22 +87,6 @@ if __name__ == '__main__':
 
     print >> f, "| delta  | "+str(int(crc_error_cnt_after,16) - int(crc_error_cnt_before,16))+"             | "+str(int(packet_error_cnt_after,16) - int(packet_error_cnt_before,16))+"                | "+str(int(bitstuffing_error_cnt_after,16) - int(bitstuffing_error_cnt_before,16))+"                     | "+str(int(timeout_error_cnt_after,16) - int(timeout_error_cnt_before,16))+"                 | "+str(int(axi_strobe_error_cnt_after,16) - int(axi_strobe_error_cnt_before,16))+"               | "+str(int(transaction_cnt_after,16) - int(transaction_cnt_before,16))+"          |"    
     
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.CRC_ERROR_CNT = "+crc_error_cnt_after
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.PACKET_ERROR_CNT = "+packet_error_cnt_after
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.BITSTUFFING_ERROR_CNT = "+ bitstuffing_error_cnt_after
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.TIMEOUT_ERROR_CNT = "+timeout_error_cnt_after
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.AXI_STROBE_ERROR_CNT = "+axi_strobe_error_cnt_after
-#    print "GEM_AMC.SLOW_CONTROL.VFAT3.TRANSACTION_CNT = "+transaction_cnt_after
-#    print "GEM_AMC.GEM_SYSTEM.CTRL.LINK_RESET = "+link_reset_after
-
-#    print "Delta GEM_AMC.SLOW_CONTROL.VFAT3.CRC_ERROR_CNT = "+str(int(crc_error_cnt_after,16) - int(crc_error_cnt_before,16))
-#    print "Delta GEM_AMC.SLOW_CONTROL.VFAT3.PACKET_ERROR_CNT = "+str(int(packet_error_cnt_after,16) - int(packet_error_cnt_before,16))
-#    print "Delta GEM_AMC.SLOW_CONTROL.VFAT3.BITSTUFFING_ERROR_CNT = "+ str(int(bitstuffing_error_cnt_after,16) - int(bitstuffing_error_cnt_before,16)) 
-#    print "Delta GEM_AMC.SLOW_CONTROL.VFAT3.TIMEOUT_ERROR_CNT = "+str(int(timeout_error_cnt_after,16) - int(timeout_error_cnt_before,16))
-#    print "Delta GEM_AMC.SLOW_CONTROL.VFAT3.AXI_STROBE_ERROR_CNT = "+str(int(axi_strobe_error_cnt_after,16) - int(axi_strobe_error_cnt_before,16))
-#    print "Delta GEM_AMC.SLOW_CONTROL.VFAT3.TRANSACTION_CNT = "+str(int(transaction_cnt_after,16) - int(transaction_cnt_before,16))
-#    print "Delta GEM_AMC.GEM_SYSTEM.CTRL.LINK_RESET = "+str(int(link_reset_after,16) - int(link_reset_before,16))
-
     print >> f, d
     
     #readAddress()
