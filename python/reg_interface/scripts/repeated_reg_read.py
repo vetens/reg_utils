@@ -82,15 +82,15 @@ if __name__ == '__main__':
 
     node = getNode(args.reg_name)
 
-    d = {}
+    register_values = {}
     
     for i in range(0,int(args.nreads)):
         value = readAddress(node.real_address)
 
-        if value in d.keys():
-            d[value] += 1
+        if value in register_values.keys():
+            register_values[value] += 1
         else:
-            d[value] = 1
+            register_values[value] = 1
         
         time.sleep(float(args.sleeptime)/float(1000000))
 
@@ -144,5 +144,5 @@ if __name__ == '__main__':
             transaction_cnt_delta
          ))
 
-    f.write(str(d)+"\n")
-    print(str(d))
+    f.write(str(register_values)+"\n")
+    print(str(register_values))
