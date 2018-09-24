@@ -9,10 +9,6 @@ from reg_utils.reg_interface.common.reg_base_ops import *
 #from mcs import *
 
 import time
-import array
-import struct
-import os
-import sys
 import socket
 
 import argparse
