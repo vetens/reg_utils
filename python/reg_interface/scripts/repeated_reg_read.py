@@ -5,9 +5,6 @@ from reg_utils.reg_interface.common.print_utils import printRed
 from reg_utils.reg_interface.common.jtag import initJtagRegAddrs
 from reg_utils.reg_interface.common.reg_base_ops import *
 
-#from rw_reg import *
-#from mcs import *
-
 import time
 import socket
 
