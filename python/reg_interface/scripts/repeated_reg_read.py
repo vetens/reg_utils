@@ -21,34 +21,32 @@ import argparse
 
 if __name__ == '__main__':
 
-    from optparse import OptionParser
-    parser = OptionParser()
-    parser.add_option("-f", "--filename", type="str", dest="filename", help="Filename to which output information is written", default="repeated_reg_read.txt")
+    parser = argparse.ArgumentParser(description='Arguments to supply to repeated_reg_read.py')
 
-    (options, args) = parser.parse_args()
+    parser.add_argument('reg_name', metavar='reg_name', type=str,help='Name of the register to read')
+    parser.add_argument('nreads', metavar='nreads', type=str,help='Number of reads')
+    parser.add_argument('sleeptime', metavar='sleeptime', type=str,help='Amount of time to sleep in microseconds')
+    parser.add_argument('-f','--filename', metavar='filename', type=str, help="Filename to which output information is written", default="repeated_reg_read.txt")
+    parser.add_argument('--card', metavar='card', type=str,help='CTP7 hostname (has no effect if you are running on a hostname that starts with eagle)',default="eagle26")
 
-    if len(args) != 3:
-            print('Usage: repeated_reg_read.py <register_name> <number of times> <sleep time in microseconds>')
-            exit(os.EX_USAGE)
+    args = parser.parse_args()
 
-    f = open(options.filename,"w")        
+    f = open(args.filename,"w")        
             
     parseXML()
     
     hostname = socket.gethostname()
 
-    if hostname == "eagle26":
-        print "This script is running on eagle26."
+    if hostname[0:4] == "eagle":
+        print("This script is running on"+str(hostname)+".")
         pass
     else:
-       print "This script is not running on eagle26. rpc_connect(\"eagle26\") will be called."
-       rpc_connect("eagle26")   
-
-       HW_RW_REG 
+       print("This script is not running on an eagle machine. rpc_connect(\""+str(args.card)+"\") will be called.")
+       rpc_connect(args.card)   
 
     writeReg(getNode("GEM_AMC.GEM_SYSTEM.CTRL.LINK_RESET"),0x1)   
 
-    time.sleep(float(sys.argv[3])/float(1000000))
+    time.sleep(float(args.sleeptime)/float(1000000))
     
     crc_error_cnt_before = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.CRC_ERROR_CNT").real_address)
     packet_error_cnt_before = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.PACKET_ERROR_CNT").real_address)
@@ -62,11 +60,11 @@ if __name__ == '__main__':
     print >> f, "|:------ | :------------ | :--------------- | :-------------------- | :---------------- | :------------------- | :-------------- |"
     print >> f, "| before | "+crc_error_cnt_before+"    | "+packet_error_cnt_before+"       | "+bitstuffing_error_cnt_before+"            | "+timeout_error_cnt_before+"        | "+axi_strobe_error_cnt_before+"           | "+transaction_cnt_before+"      |"
 
-    node = getNode(sys.argv[1])
+    node = getNode(args.reg_name)
 
     d = {}
     
-    for i in range(0,int(sys.argv[2])):
+    for i in range(0,int(args.nreads)):
         value = readAddress(node.real_address)
 
         if value in d.keys():
@@ -74,7 +72,7 @@ if __name__ == '__main__':
         else:
             d[value] = 1
         
-        time.sleep(float(sys.argv[3])/float(1000000))
+        time.sleep(float(args.sleeptime)/float(1000000))
 
     crc_error_cnt_after = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.CRC_ERROR_CNT").real_address)
     packet_error_cnt_after = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.PACKET_ERROR_CNT").real_address)
