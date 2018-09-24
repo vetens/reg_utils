@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 from reg_utils.reg_interface.common.reg_xml_parser import getNode, parseXML
-from reg_utils.reg_interface.common.reg_base_ops import readAddress
-from reg_utils.reg_interface.common.reg_base_ops import writeReg
 from reg_utils.reg_interface.common.print_utils import printRed
 from reg_utils.reg_interface.common.jtag import initJtagRegAddrs
 from reg_utils.reg_interface.common.reg_base_ops import *
