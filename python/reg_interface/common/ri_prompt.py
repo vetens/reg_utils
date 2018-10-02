@@ -22,7 +22,10 @@ class Prompt(Cmd):
           This is a base class and it can (should) be extended
 
     """
-
+       
+    cardname=None
+    """AMC card host name"""
+ 
     def preloop(self):
         """Overwrites the default `preloop` behavior with addition of commands history. History file is ~/.reg_interface_history"""
         if readline and os.path.exists(histfile):
@@ -90,6 +93,7 @@ class Prompt(Cmd):
             self.prompt = 'CTP7 > '
         else:
             self.prompt = hostname + ' > '
+            self.cardname = hostname
             pass
 
     def do_outputnode(self, args):
