@@ -23,14 +23,15 @@ def compareFwFiles(args):
     compare_mcs_bit(args.fwFileMCS, args.fwFileBit)
     return
 
-def fpgaHardReset(args):
+def fpgaHardResetSync(args):
     scaInit(args)
     fpga_single_hard_reset()
     return
 
-def fpgaHeldInHardReset(args):
+def fpgaHardResetAsync(args):
     ohList = scaInit(args)
     fpga_keep_hard_reset(ohList)
+    fpga_remove_hard_reset(ohList)
     return
 
 def fpgaId(args):
@@ -125,12 +126,12 @@ if __name__ == '__main__':
     parser_compareFwFiles.set_defaults(func=compareFwFiles)
 
     # Create subparser for fpga hard reset 
-    parser_reset = subparserCmds.add_parser("h", help="FPGA hard reset will be done")
-    parser_reset.set_defaults(func=fpgaHardReset)
+    parser_reset = subparserCmds.add_parser("h", help="A synchronous FPGA hard reset will be done to all OHs connected to this AMC")
+    parser_reset.set_defaults(func=fpgaHardResetSync)
 
     # Create subparser for holding fpga in hard reset 
-    parser_reset = subparserCmds.add_parser("hh", help="FPGA hard reset will be asserted and held")
-    parser_reset.set_defaults(func=fpgaHeldInHardReset)
+    parser_reset = subparserCmds.add_parser("hh", help="FPGA hard reset will be done on the selected OHs defined by the ohMask, which is not guaranteed to arrive to all selected OHs at the same time")
+    parser_reset.set_defaults(func=fpgaHardResetAsync)
 
     # Create subparser for getting fpga ID 
     parser_reset = subparserCmds.add_parser("fpga-id", help="FPGA ID will be read through JTAG")
