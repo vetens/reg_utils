@@ -84,6 +84,22 @@ def programGBT(ohSelect, gbtSelect, command):
         subheading('Destroying configuration of OH%d GBT%d' % (ohSelect, gbtSelect))
         destroyConfig()
 
+    elif command == 'set-phase':
+        if len(sys.argv) < 5:
+            print("For this command, you also need to provide a phase")
+            return
+
+        phase = int(sys.argv[4])
+        
+        subheading('Setting the phase on OH%d GBT%d' % (ohSelect, gbtSelect,phase))
+
+        for subReg in range(0, 3):
+            addr = GBT_ELINK_SAMPLE_PHASE_REGS[elink][subReg]
+            value = (regs[addr] & 0xf0) + phase
+            wReg(ADDR_IC_ADDR, addr)
+            wReg(ADDR_IC_WRITE_DATA, value)
+            wReg(ADDR_IC_EXEC_WRITE, 1)
+        
     else:
         printRed("Unrecognized command '%s'" % command)
         return
