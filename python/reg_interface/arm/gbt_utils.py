@@ -91,7 +91,7 @@ def programGBT(ohSelect, gbtSelect, command):
 
         phase = int(sys.argv[4])
         
-        subheading('Setting the phase on OH%d GBT%d' % (ohSelect, gbtSelect,phase))
+        subheading('Setting the phase on OH%d GBT%d to %d' % (ohSelect, gbtSelect,phase))
 
         for subReg in range(0, 3):
             addr = GBT_ELINK_SAMPLE_PHASE_REGS[elink][subReg]
