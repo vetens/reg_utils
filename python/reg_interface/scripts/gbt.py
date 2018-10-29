@@ -15,7 +15,7 @@ if __name__ == '__main__':
         print('available commands:')
         print('  config <config_filename_txt>:   Configures the GBT with the given config file (must use the txt version of the config file, can be generated with the GBT programmer software)')
         print('  v3b-phase-scan <base_config_filename_txt>:   Configures the GBT with the given config file, and performs an elink phase scan while checking the VFAT communication for each phase')
-        print('  set-phase phase: Set the phase of a GBT')
+        print('  set-phase <phase>: Set the phase of a GBT')
         exit(os.EX_USAGE)
     else:
         ohSelect = int(sys.argv[1])
