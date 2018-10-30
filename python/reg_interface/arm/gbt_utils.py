@@ -93,12 +93,15 @@ def programGBT(ohSelect, gbtSelect, command):
         
         subheading('Setting the phase on OH%d GBT%d to %d' % (ohSelect, gbtSelect,phase))
 
-        for subReg in range(0, 3):
-            addr = GBT_ELINK_SAMPLE_PHASE_REGS[elink][subReg]
-            value = (regs[addr] & 0xf0) + phase
-            wReg(ADDR_IC_ADDR, addr)
-            wReg(ADDR_IC_WRITE_DATA, value)
-            wReg(ADDR_IC_EXEC_WRITE, 1)
+        initVfatRegAddrs()
+
+        for elink, vfat in V3B_GBT_ELINK_TO_VFAT[gbtSelect].items():
+            for subReg in range(0, 3):
+                addr = GBT_ELINK_SAMPLE_PHASE_REGS[elink][subReg]
+                value = phase
+                wReg(ADDR_IC_ADDR, addr)
+                wReg(ADDR_IC_WRITE_DATA, value)
+                wReg(ADDR_IC_EXEC_WRITE, 1)
         
     else:
         printRed("Unrecognized command '%s'" % command)
