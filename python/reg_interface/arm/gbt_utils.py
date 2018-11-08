@@ -85,24 +85,25 @@ def programGBT(ohSelect, gbtSelect, command):
         destroyConfig()
 
     elif command == 'set-phase':
-        if len(sys.argv) < 5:
-            print("For this command, you also need to provide a phase")
+        if len(sys.argv) < 6:
+            print("For this command, you also need to provide a vfat and a phase")
             return
 
-        phase = int(sys.argv[4])
+        vfat = int(sys.argv[4])
+        phase = int(sys.argv[5])
         
-        subheading('Setting the phase on OH%d GBT%d to %d' % (ohSelect, gbtSelect,phase))
+        subheading('Setting the phase on the elink associated with OH%d GBT%d VFAT%d to %d' % (ohSelect,gbtSelect,vfat,phase))
 
         initVfatRegAddrs()
 
-        for elink, vfat in V3B_GBT_ELINK_TO_VFAT[gbtSelect].items():
-            for subReg in range(0, 3):
-                addr = GBT_ELINK_SAMPLE_PHASE_REGS[elink][subReg]
-                value = phase
-                wReg(ADDR_IC_ADDR, addr)
-                wReg(ADDR_IC_WRITE_DATA, value)
-                wReg(ADDR_IC_EXEC_WRITE, 1)
-        
+        for elink in V3B_GBT_ELINK_TO_VFAT[gbtSelect].keys():
+            if V3B_GBT_ELINK_TO_VFAT[gbtSelect][elink] == vfat:
+                for subReg in range(0, 3):
+                    addr = GBT_ELINK_SAMPLE_PHASE_REGS[elink][subReg]
+                    wReg(ADDR_IC_ADDR, addr)
+                    wReg(ADDR_IC_WRITE_DATA, phase)
+                    wReg(ADDR_IC_EXEC_WRITE, 1)
+                break    
     else:
         printRed("Unrecognized command '%s'" % command)
         return
