@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     parser.add_argument('reg_name',metavar='reg_name',type=str,help='Name of the register to read')
     parser.add_argument('nreads',metavar='nreads',type=int,help='Number of reads')
-    parser.add_argument('sleeptime',metavar='sleeptime',type=float,help='Amount of time to sleep in microseconds')
+    parser.add_argument('sleeptime',metavar='sleeptime',type=float,help='Amount of time to sleep between reads, in microseconds. It should be >= 250 in order to avoid damage to the system.')
     parser.add_argument('-f','--filename',metavar='filename',type=str,help="Filename to which output information is written",default="repeated_reg_read.txt")
     parser.add_argument('--card',metavar='card',type=str,help='CTP7 hostname (has no effect if you are running on a hostname that starts with eagle)',default="eagle26")
 
@@ -69,6 +69,11 @@ if __name__ == '__main__':
     node = getNode(args.reg_name)
 
     register_values = {}
+
+    sleeptime = args.sleeptime
+    if sleeptime < 250.:
+        print("Warning, sleeptime will be increased to 250 microseconds")
+        sleeptime = 250.
     
     for i in range(0,int(args.nreads)):
         value = readAddress(node.real_address)
@@ -78,7 +83,7 @@ if __name__ == '__main__':
         else:
             register_values[value] = 1
         
-        time.sleep(args.sleeptime/1000000.)
+        time.sleep(sleeptime/1000000.)
 
     crc_error_cnt_after = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.CRC_ERROR_CNT").real_address)
     packet_error_cnt_after = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.PACKET_ERROR_CNT").real_address)
