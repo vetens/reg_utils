@@ -29,8 +29,8 @@ if __name__ == '__main__':
         print("This script is running on"+str(hostname)+".")
         pass
     else:
-       print("This script is not running on an eagle machine. rpc_connect(\""+str(args.card)+"\") will be called.")
-       rpc_connect(args.card)   
+       print("This script is not running on an eagle machine. rpc_connect(\""+str(args.cardName)+"\") will be called.")
+       rpc_connect(args.cardName)   
 
     writeReg(getNode("GEM_AMC.GEM_SYSTEM.CTRL.LINK_RESET"),0x1)   
 
