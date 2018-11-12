@@ -34,7 +34,12 @@ if __name__ == '__main__':
 
     writeReg(getNode("GEM_AMC.GEM_SYSTEM.CTRL.LINK_RESET"),0x1)   
 
-    time.sleep(args.sleeptime/1000000.)
+    sleeptime = args.sleeptime
+    if sleeptime < 250.:
+        print("Warning, sleeptime will be increased to 250 microseconds")
+        sleeptime = 250.
+    
+    time.sleep(sleeptime/1000000.)
     
     crc_error_cnt_before = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.CRC_ERROR_CNT").real_address)
     packet_error_cnt_before = readAddress(getNode("GEM_AMC.SLOW_CONTROL.VFAT3.PACKET_ERROR_CNT").real_address)
@@ -70,11 +75,6 @@ if __name__ == '__main__':
 
     register_values = {}
 
-    sleeptime = args.sleeptime
-    if sleeptime < 250.:
-        print("Warning, sleeptime will be increased to 250 microseconds")
-        sleeptime = 250.
-    
     for i in range(0,int(args.nreads)):
         value = readAddress(node.real_address)
 
