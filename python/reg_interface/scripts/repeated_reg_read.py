@@ -13,9 +13,9 @@ if __name__ == '__main__':
 
     parser.add_argument('reg_name',metavar='reg_name',type=str,help='Name of the register to read')
     parser.add_argument('nreads',metavar='nreads',type=int,help='Number of reads')
-    parser.add_argument('sleeptime',metavar='sleeptime',type=float,help='Amount of time to sleep between reads, in microseconds. It should be >= 250 in order to avoid damage to the system.')
+    parser.add_argument('sleeptime',metavar='sleeptime',type=float,help='Amount of time to sleep between reads, in microseconds. It should be >= 250 in order to avoid overlapping transactions on the AXI bus.')
     parser.add_argument('-f','--filename',metavar='filename',type=str,help="Filename to which output information is written",default="repeated_reg_read.txt")
-    parser.add_argument('--card',metavar='card',type=str,help='CTP7 hostname (has no effect if you are running on a hostname that starts with eagle)',default="eagle26")
+    parser.add_argument('-c','--cardName',metavar='card',type=str,help='CTP7 hostname (has no effect if you are running on a hostname that starts with eagle)',default="eagle26")
 
     args = parser.parse_args()
 
