@@ -12,6 +12,9 @@ if 'eagle' in hostname:
   wReg = lib.putReg
   wReg.argtypes=[c_uint,c_uint]
 else:
+    # In a future refactoring the following try block
+    # should be replaced with just teh single line below:
+    #lib = CDLL("librwreg.so")
   try:
     lib = CDLL("librpcman.so")
   except OSError:
