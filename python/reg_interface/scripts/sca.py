@@ -112,60 +112,61 @@ def sysmon(args):
 if __name__ == '__main__':
     # create the parser
     import argparse
-    parser = argparse.ArgumentParser(description='Arguments to supply to sca.py')
 
-    # Positional arguments
-    parser.add_argument("cardName", type=str, help="hostname of the AMC you are connecting too, e.g. 'eagle64'; if running on an AMC use 'local' instead", metavar="cardName")
-    parser.add_argument("ohMask", type=parseInt, help="ohMask to apply, a 1 in the n^th bit indicates the n^th OH should be considered", metavar="ohMask")
+    parent_parser = argparse.ArgumentParser(add_help = False)
+    parent_parser.add_argument("cardName", type=str, help="hostname of the AMC you are connecting too, e.g. 'eagle64'; if running on an AMC use 'local' instead")
+    parent_parser.add_argument("ohMask", type=parseInt, help="ohMask to apply, a 1 in the n^th bit indicates the n^th OH should be considered")
+
+    parser = argparse.ArgumentParser(description='Arguments to supply to sca.py')
     subparserCmds = parser.add_subparsers(help="sca command help")
 
     # Create subparser for compare-mcs-bit
-    parser_compareFwFiles = subparserCmds.add_parser("compare-mcs-bit", help="compares a *.mcs with a *.bit file to check if the firmware is the same")
-    parser_compareFwFiles.add_argument("fwFileMCS",type=str, help="firmware mcs file to be used in the comparison", metavar="fwFileMCS")
-    parser_compareFwFiles.add_argument("fwFileBit",type=str, help="firmware bit file to be used in the comparison", metavar="fwFileBit")
+    parser_compareFwFiles = subparserCmds.add_parser("compare-mcs-bit", help="compares a *.mcs with a *.bit file to check if the firmware is the same", parents = [parent_parser])
+    parser_compareFwFiles.add_argument("fwFileMCS",type=str, help="firmware mcs file to be used in the comparison")
+    parser_compareFwFiles.add_argument("fwFileBit",type=str, help="firmware bit file to be used in the comparison")
     parser_compareFwFiles.set_defaults(func=compareFwFiles)
 
     # Create subparser for fpga hard reset 
-    parser_reset = subparserCmds.add_parser("h", help="A synchronous FPGA hard reset will be done to all OHs connected to this AMC")
-    parser_reset.set_defaults(func=fpgaHardResetSync)
+    parser_hardReset = subparserCmds.add_parser("h", help="A synchronous FPGA hard reset will be done to all OHs connected to this AMC", parents = [parent_parser])
+    parser_hardReset.set_defaults(func=fpgaHardResetSync)
 
     # Create subparser for holding fpga in hard reset 
-    parser_reset = subparserCmds.add_parser("hh", help="FPGA hard reset will be done on the selected OHs defined by the ohMask, which is not guaranteed to arrive to all selected OHs at the same time")
-    parser_reset.set_defaults(func=fpgaHardResetAsync)
+    parser_assertHardReset = subparserCmds.add_parser("hh", help="FPGA hard reset will be done on the selected OHs defined by the ohMask, which is not guaranteed to arrive to all selected OHs at the same time", parents = [parent_parser])
+    parser_assertHardReset.set_defaults(func=fpgaHardResetAsync)
 
     # Create subparser for getting fpga ID 
-    parser_reset = subparserCmds.add_parser("fpga-id", help="FPGA ID will be read through JTAG")
-    parser_reset.set_defaults(func=fpgaId)
+    parser_idFPGA = subparserCmds.add_parser("fpga-id", help="FPGA ID will be read through JTAG", parents = [parent_parser])
+    parser_idFPGA.set_defaults(func=fpgaId)
 
     # Create subparser for programming the fpga
-    parser_programFPGA = subparserCmds.add_parser("program-fpga", help="Program OH FPGA with a bitfile or an MCS file")
-    parser_programFPGA.add_argument("fwFile", type=str, help="firmware file to program fpga with, must end in either '*.bit' or '*.mcs'", metavar="fwFile")
+    parser_programFPGA = subparserCmds.add_parser("program-fpga", help="Program OH FPGA with a bitfile or an MCS file", parents = [parent_parser])
+    parser_programFPGA.add_argument("fwFile", type=str, help="firmware file to program fpga with, must end in either '*.bit' or '*.mcs'")
     parser_programFPGA.set_defaults(func=fpgaProgram)
 
     # Create subparser for gpio-read-input
-    parser_readGPIO = subparserCmds.add_parser("gpio-read-input", help="Read GPIO settings of the SCA")
+    parser_readGPIO = subparserCmds.add_parser("gpio-read-input", help="Read GPIO settings of the SCA", parents = [parent_parser])
     parser_readGPIO.set_defaults(func=gpioRead)
 
     # Create subparser for gpio-set-direction
     # Default corresponds to setting SCA output direction on OHv3c
-    parser_setGPIODirection = subparserCmds.add_parser("gpio-set-direction", help="Set the GPIO Direction Mask")
-    parser_setGPIODirection.add_argument("gpioValue", type=parseInt, default=0x0fffff8f, metavar="gpioValue",
+    parser_setGPIODirection = subparserCmds.add_parser("gpio-set-direction", help="Set the GPIO Direction Mask", parents = [parent_parser])
+    parser_setGPIODirection.add_argument("gpioValue", type=parseInt, default=0x0fffff8f,
             help="32 bit number where each bit represents a GPIO channel.  If a given bit is high it means that this GPIO channel will be set to OUTPUT mode, and otherwise it will be set to INPUT mode")
     parser_setGPIODirection.set_defaults(func=gpioSetDirection)
    
     # Create subparser for gpio-set-output
     # Default corresponds to setting SCA output value on the OHv3c
-    parser_setGPIOOutput = subparserCmds.add_parser("gpio-set-output", help="Set the GPIO output values")
-    parser_setGPIOOutput.add_argument("gpioValue", type=parseInt, default=0xf00000f0, metavar="gpioValue",
+    parser_setGPIOOutput = subparserCmds.add_parser("gpio-set-output", help="Set the GPIO output values", parents = [parent_parser])
+    parser_setGPIOOutput.add_argument("gpioValue", type=parseInt, default=0xf00000f0,
             help="32 bit number where each bit represents the 32 GPIO channels state")
     parser_setGPIOOutput.set_defaults(func=gpioSetOutput)
 
     # Create subparser for sca reset 
-    parser_reset = subparserCmds.add_parser("r", help="SCA reset will be done")
+    parser_reset = subparserCmds.add_parser("r", help="SCA reset will be done", parents = [parent_parser])
     parser_reset.set_defaults(func=scaReset)
 
     # Create subparser for sysmon
-    parser_sysmon = subparserCmds.add_parser("sysmon", help="Read FPGA sysmon data repeatedly")
+    parser_sysmon = subparserCmds.add_parser("sysmon", help="Read FPGA sysmon data repeatedly", parents = [parent_parser])
     parser_sysmon.set_defaults(func=sysmon)
 
     # Parser the arguments and call the appropriate function
