@@ -43,3 +43,5 @@
 
 # Don't ignore github directory
 !.github
+# Don't ignore index.html
+!*index.html
