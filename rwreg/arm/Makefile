@@ -57,7 +57,7 @@ clean: cleanrpm
 	-rm -rf $(PackageDir)
 
 doc: 
-	@echo "TO DO"
+	doxygen doc/arm.doxy
 
 cleandoc: 
-	@echo "TO DO"
+	-rm-rf doc/html doc/latex doc/xml

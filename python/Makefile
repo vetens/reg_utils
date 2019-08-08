@@ -1,3 +1,5 @@
+Project := reg_utils
+include $(BUILD_HOME)/$(Project)/config/mfSphinx.mk
 SUBPACKAGES := \
         reg_interface \
         reg_generator
@@ -26,8 +28,7 @@ $(SUBPACKAGES.RPM):
 	$(MAKE) -C $(patsubst %.rpm,%, $@) rpm
 
 $(SUBPACKAGES.DOC):
-	@echo "Nothing to do"
-	#$(MAKE) -C $(patsubst %.doc,%, $@) html
+	$(MAKE) -C $(patsubst %.doc,%, $@) doc
 
 $(SUBPACKAGES.CLEANRPM):
 	$(MAKE) -C $(patsubst %.cleanrpm,%, $@) cleanrpm

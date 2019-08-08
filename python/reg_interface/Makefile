@@ -38,7 +38,7 @@ default:
 	@cp -rf __init__.py $(PackageDir)
 
 # need to ensure that the python only stuff is packaged into RPMs
-.PHONY: clean preprpm
+.PHONY: clean preprpm doc
 _rpmprep: preprpm
 	@echo "Running _rpmprep target"
 preprpm: default
@@ -49,8 +49,11 @@ preprpm: default
 	-cp -rf README.md LICENSE CHANGELOG.md MANIFEST.in requirements.txt $(PackageDir)
 	-cp -rf README.md LICENSE CHANGELOG.md MANIFEST.in requirements.txt pkg
 
+doc:
+	doxygen doc/reg_interface.doxy
+
 cleandoc:
-	@echo "Nothing to do"
+	-rm-rf doc/html doc/latex doc/xml
 
 clean:
 	@echo "Running clean target"
