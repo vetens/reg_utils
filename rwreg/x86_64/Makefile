@@ -9,6 +9,7 @@ PackagePath  := $(shell pwd)
 PackageDir   := pkg/$(ShortPackage)
 Arch         := x86_64
 Packager     := Mykhailo Dalchenko
+REG_UTILS    := $(BUILD_HOME)/reg_utils
 
 RWREG_VER_MAJOR:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{split($$0,a," "); print a[1];}' | awk '{split($$0,b,":"); print b[2];}')
 RWREG_VER_MINOR:=$(shell $(BUILD_HOME)/$(Project)/config/tag2rel.sh | awk '{split($$0,a," "); print a[2];}' | awk '{split($$0,b,":"); print b[2];}')
@@ -61,8 +62,6 @@ $(OBJS_RPC_SA):$(SRCS_RPC_SA)
 	$(CC) $(CCFLAGS) $(INC) -c -o $@ $<
 
 doc:
-	doxygen doc/${Package}.doxy
-
 clean: cleanrpm
 	-${RM} ${RPC_SA_LIB} ${OBJS_RPC_SA} 
 	-rm -rf $(PackageDir)

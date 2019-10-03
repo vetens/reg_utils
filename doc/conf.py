@@ -27,7 +27,7 @@ import sys, os
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.viewcode', 'breathe']
 breathe_projects = {
-    "rwreg_x86":"../rwreg/x86_64/doc/xml/",
+    "rwreg_x86":"../rwreg/x86_64/doc/build/xml/",
     }
 
 # Add any paths that contain templates here, relative to this directory.
